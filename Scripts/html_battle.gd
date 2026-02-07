@@ -66,6 +66,9 @@ func _ready() -> void:
 	# Randomize starting turn
 	if randf() > 0.5:
 		current_turn = "enemy"
+		if info:
+			info.text = "ENEMY'S TURN"
+		_options_menu.hide()
 		enemy_turn()
 	else:
 		current_turn = "player"

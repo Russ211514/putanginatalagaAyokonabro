@@ -159,6 +159,12 @@ theme_override_font_sizes/font_size = 25
 layout_mode = 2
 theme_override_font_sizes/font_size = 25
 
+[node name="PlayerTurnTimerLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1234567892]
+layout_mode = 2
+theme_override_font_sizes/font_size = 25
+label_settings = SubResource("LabelSettings_ms847")
+text = "Time: 35s"
+
 [node name="Options" parent="BattleLayout/Battle" unique_id=1568290121 instance=ExtResource("2_hdvqd")]
 custom_minimum_size = Vector2(240, 240)
 layout_mode = 0

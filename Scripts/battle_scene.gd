@@ -11,6 +11,7 @@ extends Control
 @onready var lose: Label = $BattleLayout/Lose
 @onready var win: Label = $BattleLayout/Win
 @onready var defend_cooldown_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/DefendCooldownLabel
+@onready var player_turn_timer_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/PlayerTurnTimerLabel
 @onready var info: Label = $BattleLayout/Info
 @onready var question_info: Label = $BattleLayout/QuestionInfo
 
@@ -22,6 +23,9 @@ extends Control
 var magic_cooldown: float = 0.0
 var ultimate_cooldown: float = 0.0
 var defend_cooldown: float = 0.0
+var player_turn_time: float = 0.0
+var player_turn_max_time: float = 35.0
+var player_timeout_triggered: bool = false
 
 var current_turn = "player"
 var player_defending = false
@@ -37,6 +41,8 @@ func _ready() -> void:
 		question_info.hide()
 	if info:
 		info.show()
+	if player_turn_timer_label:
+		player_turn_timer_label.hide()
 	lose.visible = false
 	win.visible = false
 	python_game_controller.visible = false
@@ -56,6 +62,31 @@ func _ready() -> void:
 		for button in python_game_controller.python_question.get_children():
 			if button is Button:
 				button.pressed.connect(_on_answer_button_pressed.bind(button))
+	
+	# Randomize starting turn
+	if randf() > 0.5:
+		current_turn = "enemy"
+		if info:
+			info.text = "ENEMY'S TURN"
+		_options_menu.hide()
+		enemy_turn()
+	else:
+		current_turn = "player"
+		# Set timer for player's first turn
+		match bot_difficulty:
+			0:
+				player_turn_max_time = 0.0
+			1:
+				player_turn_max_time = 35.0
+			2:
+				player_turn_max_time = 25.0
+			_:
+				player_turn_max_time = 35.0
+		player_turn_time = player_turn_max_time
+		if player_turn_timer_label and player_turn_max_time > 0:
+			player_turn_timer_label.show()
+		if info:
+			info.text = "PLAYER'S TURN"
 
 func _process(delta: float) -> void:
 	if magic_cooldown > 0:
@@ -93,6 +124,28 @@ func _process(delta: float) -> void:
 				defend_button.disabled = false
 	else:
 		defend_cooldown_label.hide()
+	
+	if player_turn_time > 0 and current_turn == "player":
+		player_turn_time -= delta
+		if player_turn_timer_label:
+			player_turn_timer_label.text = "Time: %.0fs" % max(0, player_turn_time)
+			player_turn_timer_label.show()
+		if player_turn_time <= 0 and not player_timeout_triggered:
+			player_turn_time = 0
+			player_timeout_triggered = true
+			if player_turn_timer_label:
+				player_turn_timer_label.hide()
+			# Show timeout message
+			if question_info:
+				question_info.text = "TIME RAN OUT"
+				question_info.show()
+				# Wait 2 seconds then lose turn
+				await get_tree().create_timer(2.0).timeout
+				question_info.hide()
+				lose_turn()
+	elif current_turn == "enemy":
+		if player_turn_timer_label:
+			player_turn_timer_label.hide()
 
 func _on_options_button_pressed(button: BaseButton) -> void:
 	match button.text:
@@ -202,6 +255,8 @@ func switch_turn() -> void:
 		current_turn = "enemy"
 		if info:
 			info.text = "ENEMY'S TURN"
+		if player_turn_timer_label:
+			player_turn_timer_label.hide()
 		enemy_turn()
 	else:
 		current_turn = "player"
@@ -209,6 +264,23 @@ func switch_turn() -> void:
 		_options_menu.show()
 		if info:
 			info.text = "PLAYER'S TURN"
+		
+		# Set timer based on difficulty
+		match bot_difficulty:
+			0:  # Easy - no timer
+				player_turn_max_time = 0.0
+			1:  # Normal - 35 seconds
+				player_turn_max_time = 35.0
+			2:  # Hard - 25 seconds
+				player_turn_max_time = 25.0
+			_:
+				player_turn_max_time = 35.0
+		
+		# Start player turn timer
+		player_timeout_triggered = false
+		player_turn_time = player_turn_max_time
+		if player_turn_timer_label and player_turn_max_time > 0:
+			player_turn_timer_label.show()
 		
 		magic_button.disabled = (magic_cooldown > 0)
 		ultimate_button.disabled = (ultimate_cooldown > 0)
