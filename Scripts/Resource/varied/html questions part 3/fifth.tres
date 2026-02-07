@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_mlow6")
+Question_Info = "Which tag is like a \"sticker\" that works all by itself?"
+options = Array[String](["<p>", "<html>", "<br>", "<body>"])
+correct = "<br>"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

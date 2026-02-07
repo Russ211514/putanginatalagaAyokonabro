@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_pvbff")
+Question_Info = "What does the forward slash / signify in a tag?"
+options = Array[String](["The start of an instruction", "The end of an element", "A link to a website", "An image source"])
+correct = "The end of an element"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

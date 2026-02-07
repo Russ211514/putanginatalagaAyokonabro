@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_0nii5")
+Question_Info = " An \"Element\" refers to which part of the code?"
+options = Array[String](["Only the start tag", "Only the text in the middle", "Only the end tag", "The whole unit from start tag to end tag"])
+correct = "The whole unit from start tag to end tag"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"
