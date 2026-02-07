@@ -1,12 +1,15 @@
 extends Control
 
-@onready var explanation: Panel = $Explanation
-@onready var question: Label = $Question
-@onready var understand: Button = $Understand
-@onready var next: Button = $Next
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
+@onready var explanation: Panel = $CanvasLayer/Explanation
+@onready var question: Label = $CanvasLayer/Question
+@onready var understand: Button = $CanvasLayer/Understand
+@onready var next: Button = $CanvasLayer/Next
 
 func _ready() -> void:
+	canvas_layer.visible = false
+	if $Control:
+		$Control.visible = true
 	explanation.visible = false
 	question.visible = true
 	understand.visible = true
@@ -29,7 +32,8 @@ func _on_back_pressed() -> void:
 
 
 func _on_yes_pressed() -> void:
-	pass
+	canvas_layer.visible = true
+	$Control.visible = false
 
 func _on_no_pressed() -> void:
-	pass # Replace with function body.
+	get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
