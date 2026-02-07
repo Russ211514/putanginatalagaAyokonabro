@@ -6,6 +6,7 @@ extends Node
 
 @onready var RestartButton = $Restart
 @onready var question_texts: Label = $Question/QuestionText
+@onready var next_level_button = $GameOver/NextLevel
 
 var buttons: Array[Button]
 var index: int
@@ -65,15 +66,17 @@ func game_over() -> void:
 	if correct_question != quiz.theme.size():
 		$GameOver/Score.text = str("You got ", correct_question, "/", quiz.theme.size())
 		$GameOver/Restart.show()
+		$GameOver.show()
 	else:
 		$GameOver/Score.text = str("Congrats you got ", correct_question, "/", quiz.theme.size())
 		$GameOver/Restart.hide()
+		$GameOver.show()
 		# Save progress - mark mini html quiz as completed
 		LevelCore.html_mini_quiz_completed = true
-		# Return to level selector
-		await get_tree().create_timer(2.0).timeout
-		get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
-	$GameOver.show()
+		# Show next level button
+		if next_level_button:
+			next_level_button.show()
+			next_level_button.pressed.connect(_on_next_level_pressed)
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
@@ -84,3 +87,6 @@ func _on_home_pressed() -> void:
 
 func _on_restart_pressed() -> void:
 	get_tree().reload_current_scene()
+
+func _on_next_level_pressed() -> void:
+	get_tree().change_scene_to_file("res://Html Scenes/html tutorial start2.tscn")

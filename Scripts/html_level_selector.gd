@@ -31,12 +31,21 @@ func update_level_buttons() -> void:
 func _on_level_pressed(level_number: int) -> void:
 	match level_number:
 		1:
-			# If user completed mini quiz, go to part 2, otherwise start from beginning
-			if LevelCore.html_mini_quiz_completed:
+			# Level 1 progression
+			if LevelCore.lvl1_completed:
+				# User has completed both mini quiz and part 2, go to start3
+				get_tree().change_scene_to_file("res://Html Scenes/html tutorial start3.tscn")
+			elif LevelCore.html_mini_quiz_completed:
+				# User completed mini quiz, go to part 2
 				get_tree().change_scene_to_file("res://Html Scenes/html tutorial start2.tscn")
 			else:
+				# Start from the beginning
 				get_tree().change_scene_to_file("res://Html Scenes/html tutorial start.tscn")
 		2:
 			get_tree().change_scene_to_file("res://Html Scenes/html_question.tscn")
 		3:
 			get_tree().change_scene_to_file("res://Html Scenes/html_battle.tscn")
+
+
+func _on_back_pressed() -> void:
+	get_tree().change_scene_to_file("res://Scenes/Language Selection.tscn")
