@@ -68,6 +68,8 @@ func game_over() -> void:
 	else:
 		$GameOver/Score.text = str("Congrats you got ", correct_question, "/", quiz.theme.size())
 		$GameOver/Restart.hide()
+		# Unlock level 2 when player gets perfect score
+		LevelCore.lvl1_completed = true
 	$GameOver.show()
 
 func _on_back_pressed() -> void:

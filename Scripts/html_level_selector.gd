@@ -31,8 +31,8 @@ func update_level_buttons() -> void:
 func _on_level_pressed(level_number: int) -> void:
 	match level_number:
 		1:
-			get_tree().change_scene_to_file("res://Html Scenes/html_tutorial.tscn")
+			get_tree().change_scene_to_file("res://Html Scenes/html tutorial start.tscn")
 		2:
-			get_tree().change_scene_to_file("res://Html Scenes/html_question.tscn")
+			get_tree().change_scene_to_file("res://Html Scenes/html tutorial start2.tscn")
 		3:
 			get_tree().change_scene_to_file("res://Html Scenes/html_battle.tscn")

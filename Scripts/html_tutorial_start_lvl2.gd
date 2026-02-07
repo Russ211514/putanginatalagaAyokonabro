@@ -24,4 +24,4 @@ func _on_next_pressed() -> void:
 	pass
 
 func _on_back_pressed() -> void:
-	pass
+	get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")

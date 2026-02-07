@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://1axocu4ty1yl"]
 
 [ext_resource type="Texture2D" uid="uid://cyh0kegeul5ab" path="res://Art Assets/backgrounds/background_level_selection.png" id="1_2ipe2"]
+[ext_resource type="Script" uid="uid://dufdn1jd5gpgu" path="res://Scripts/html_level_selector.gd" id="1_v7xjh"]
 [ext_resource type="Texture2D" uid="uid://gfhatt7lgafe" path="res://Art Assets/buttons/blank_button_level_selection.png" id="2_v7xjh"]
 [ext_resource type="Texture2D" uid="uid://ce8xn6c21jmwu" path="res://Art Assets/buttons/lock_button_level_selection.png" id="3_t2o12"]
-[ext_resource type="Script" uid="uid://d4cg4uradg8xq" path="res://Scripts/html_level_selector.gd" id="4_script"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_y3y7t"]
 texture = ExtResource("1_2ipe2")
@@ -15,7 +15,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("4_script")
+script = ExtResource("1_v7xjh")
 
 [node name="Panel" type="Panel" parent="." unique_id=690669300]
 layout_mode = 1

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://cjifrlp3mlumn"]
+[gd_scene format=3 uid="uid://cjifrlp3mlumn"]
 
 [ext_resource type="Script" uid="uid://bi6c4irox6yqb" path="res://Scripts/language_selection.gd" id="1_jhi82"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="1_o2q42"]
@@ -51,7 +51,7 @@ region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
 texture = ExtResource("7_jnu7b")
 region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
 
-[node name="Control" type="Control"]
+[node name="Control" type="Control" unique_id=1972235445]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -60,7 +60,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_jhi82")
 
-[node name="Panel" type="Panel" parent="."]
+[node name="Panel" type="Panel" parent="." unique_id=1794706403]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -69,7 +69,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_styles/panel = SubResource("StyleBoxTexture_6gnqj")
 
-[node name="Label" type="Label" parent="."]
+[node name="Label" type="Label" parent="." unique_id=2008530190]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -95,7 +95,7 @@ text = "SELECT YOUR LANGUAGE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=2027585268]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -110,7 +110,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 30
 
-[node name="HTML" type="Button" parent="VBoxContainer"]
+[node name="HTML" type="Button" parent="VBoxContainer" unique_id=1431490110]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.86141485, 0.7504317, 0.5671498, 1)
 theme_override_constants/outline_size = 10
@@ -122,7 +122,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jhi82")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_jhi82")
 text = "HTML"
 
-[node name="JAVA" type="Button" parent="VBoxContainer"]
+[node name="JAVA" type="Button" parent="VBoxContainer" unique_id=1970157481]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8627451, 0.7490196, 0.5686275, 1)
 theme_override_constants/outline_size = 10
@@ -134,7 +134,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_jnu7b")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_jnu7b")
 text = "JAVA"
 
-[node name="PYTHON" type="Button" parent="VBoxContainer"]
+[node name="PYTHON" type="Button" parent="VBoxContainer" unique_id=1916646005]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8627451, 0.7490196, 0.5686275, 1)
 theme_override_constants/outline_size = 10
@@ -146,7 +146,7 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_me55y")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_me55y")
 text = "PYTHON"
 
-[node name="Back" type="Button" parent="."]
+[node name="Back" type="Button" parent="." unique_id=1366443966]
 layout_mode = 0
 offset_left = 1646.0
 offset_top = 897.0
