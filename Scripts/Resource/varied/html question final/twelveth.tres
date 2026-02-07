@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_52v54")
-Question_Info = "The Giant Megaphone Question: Which tag is used to create the largest, most important heading on a webpage?"
+Question_Info = "Which tag is used to create the largest, most important heading on a webpage?"
 options = Array[String](["<p>", "<h6>", "<h1>", "<title>"])
 correct = "<h1>"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

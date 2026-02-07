@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_nvw2q")
-Question_Info = "The Slash Symbol Question: In a closing tag, where is the forward slash (/) character located?"
+Question_Info = "In a closing tag, where is the forward slash (/) character located?"
 options = Array[String](["After the tag name (e.g., <p/>)", "Before the tag name (e.g., </p>)", "Outside the brackets (e.g., / <p>)", "It is not required in a closing tag."])
 correct = "Before the tag name (e.g., </p>)"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

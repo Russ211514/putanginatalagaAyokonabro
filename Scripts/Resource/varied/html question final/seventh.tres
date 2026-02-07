@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_1ccq3")
-Question_Info = "The \"Brain\" of the Page Question: Which section of the HTML skeleton acts like the \"Brain,\" holding information that doesn't show up on the main page area?"
+Question_Info = "Which section of the HTML skeleton acts like the \"Brain,\" holding information that doesn't show up on the main page area?"
 options = Array[String](["<body>", "<head>", "<title>", "<html>"])
 correct = "<head>"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_x5yh8")
-Question_Info = "The Browser Tab Question: You want your website tab to say \"My Awesome Game\" instead of just \"Untitled.\" Which tag inside the <head> section handles this \"Nametag\"?"
+Question_Info = "You want your website tab to say \"My Awesome Game\" instead of just \"Untitled.\" Which tag inside the <head> section handles this \"Nametag\"?"
 options = Array[String](["<html>", "<h1>", "<title>", "<meta>"])
 correct = "<title>"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

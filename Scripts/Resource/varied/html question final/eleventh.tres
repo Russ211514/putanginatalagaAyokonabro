@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_xb2hc")
-Question_Info = "The Anatomy of an Element Question: An HTML \"Element\" consists of which three parts in order?"
+Question_Info = "The AnatoAn HTML \"Element\" consists of which three parts in order?"
 options = Array[String](["Start Tag, Content, End Tag", "Content, Start Tag, End Tag", "End Tag, Content, Start Tag", "Start Tag, End Tag, Content"])
 correct = "Start Tag, Content, End Tag"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

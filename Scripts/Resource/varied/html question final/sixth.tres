@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_2uydc")
-Question_Info = "Syntax Identification Question: You are looking at a piece of code. Which of these is written correctly following standard HTML syntax?"
+Question_Info = "You are looking at a piece of code. Which of these is written correctly following standard HTML syntax?"
 options = Array[String](["<p>Hello World <p>", "<p>Hello World /p>", "<p>Hello World</p>", "<p>Hello World</p/"])
 correct = "<p>Hello World</p>"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

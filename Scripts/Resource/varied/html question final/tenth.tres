@@ -4,7 +4,7 @@
 
 [resource]
 script = ExtResource("1_f1855")
-Question_Info = "Content Organization Question: If you want to write a short story or a simple sentence on your page, which tag do you use to create a \"Paragraph\"?"
+Question_Info = "If you want to write a short story or a simple sentence on your page, which tag do you use to create a \"Paragraph\"?"
 options = Array[String](["<h1>", "<html>", "<body>", "<p>"])
 correct = "<p>"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"
