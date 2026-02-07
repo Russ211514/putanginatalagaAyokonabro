@@ -20,7 +20,7 @@ func update_level_buttons() -> void:
 	if level1:
 		level1.disabled = false
 	
-	# Level 2 unlocks after level 1 is completed
+	# Level 2 unlocks after completing the html quiz part 2
 	if level2:
 		level2.disabled = not LevelCore.lvl1_completed
 	
