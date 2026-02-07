@@ -99,12 +99,21 @@ func _process(delta: float) -> void:
 	else:
 		defend_cooldown_label.hide()
 	
-	if current_turn == "player" and player_turn_time > 0:
+	if player_turn_time > 0 and current_turn == "player":
 		player_turn_time -= delta
 		if player_turn_timer_label:
 			player_turn_timer_label.text = "Time: %.0fs" % max(0, player_turn_time)
+			player_turn_timer_label.show()
 		if player_turn_time <= 0:
 			player_turn_time = 0
+			if player_turn_timer_label:
+				player_turn_timer_label.hide()
+	elif current_turn == "enemy":
+		if player_turn_timer_label:
+			player_turn_timer_label.hide()
+			if current_turn == "player" and player_turn_time > 0:
+				player_turn_timer_label.show()
+	else:
 		if player_turn_timer_label:
 			player_turn_timer_label.hide()
 

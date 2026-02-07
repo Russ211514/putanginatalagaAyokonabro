@@ -33,7 +33,7 @@ Button/styles/hover = SubResource("StyleBoxEmpty_wb0gu")
 Button/styles/normal = SubResource("StyleBoxEmpty_84vmf")
 Button/styles/pressed = SubResource("StyleBoxEmpty_xdap8")
 
-[node name="Control" type="Control" unique_id=2086006973]
+[node name="Control2" type="Control" unique_id=2086006973]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -161,8 +161,8 @@ theme_override_font_sizes/font_size = 30
 [node name="PlayerTurnTimerLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1234567891]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-label_settings = SubResource("LabelSettings_hfshi")
 text = "Time: 35s"
+label_settings = SubResource("LabelSettings_hfshi")
 
 [node name="Options" parent="BattleLayout/Battle" unique_id=1829402379 instance=ExtResource("3_jblth")]
 custom_minimum_size = Vector2(240, 240)
