@@ -35,6 +35,8 @@ func _ready() -> void:
 	
 	if question_info:
 		question_info.hide()
+	if info:
+		info.show()
 	lose.visible = false
 	win.visible = false
 	html_game_controller.visible = false
@@ -200,7 +202,6 @@ func switch_turn() -> void:
 		current_turn = "enemy"
 		if info:
 			info.text = "ENEMY'S TURN"
-			info.show()
 		enemy_turn()
 	else:
 		current_turn = "player"

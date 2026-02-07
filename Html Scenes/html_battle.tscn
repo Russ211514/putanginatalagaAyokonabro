@@ -270,23 +270,25 @@ vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Info" type="Label" parent="BattleLayout" unique_id=1234567890]
+visible = true
 custom_minimum_size = Vector2(400, 80)
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -200.0
-offset_top = 20.0
-offset_right = 200.0
-offset_bottom = 100.0
+offset_left = -255.0
+offset_top = 9.0
+offset_right = 255.0
+offset_bottom = 111.0
 grow_horizontal = 2
 theme = ExtResource("2_1ya06")
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
-theme_override_font_sizes/font_size = 40
+theme_override_font_sizes/font_size = 50
 text = "PLAYER'S TURN"
 horizontal_alignment = 1
 vertical_alignment = 1
 
 [node name="QuestionInfo" type="Label" parent="BattleLayout" unique_id=884830123]
+visible = false
 custom_minimum_size = Vector2(645, 150)
 anchors_preset = 8
 anchor_left = 0.5
@@ -299,8 +301,10 @@ offset_right = 322.5
 offset_bottom = 75.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 60
+theme = ExtResource("2_1ya06")
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 60
 text = "ENEMY GOT IT RIGHT"
 horizontal_alignment = 1
+vertical_alignment = 1
 vertical_alignment = 1
