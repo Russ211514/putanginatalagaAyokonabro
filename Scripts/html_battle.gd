@@ -62,6 +62,28 @@ func _ready() -> void:
 		for button in html_game_controller.html_question.get_children():
 			if button is Button:
 				button.pressed.connect(_on_answer_button_pressed.bind(button))
+	
+	# Randomize starting turn
+	if randf() > 0.5:
+		current_turn = "enemy"
+		enemy_turn()
+	else:
+		current_turn = "player"
+		# Set timer for player's first turn
+		match bot_difficulty:
+			0:
+				player_turn_max_time = 0.0
+			1:
+				player_turn_max_time = 35.0
+			2:
+				player_turn_max_time = 25.0
+			_:
+				player_turn_max_time = 35.0
+		player_turn_time = player_turn_max_time
+		if player_turn_timer_label and player_turn_max_time > 0:
+			player_turn_timer_label.show()
+		if info:
+			info.text = "PLAYER'S TURN"
 
 func _process(delta: float) -> void:
 	if magic_cooldown > 0:
