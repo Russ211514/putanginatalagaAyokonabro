@@ -1,46 +1,46 @@
-[gd_scene format=3 uid="uid://42emvic441or"]
+[gd_scene format=3 uid="uid://be2yhf7m3bxq"]
 
-[ext_resource type="Script" uid="uid://dgw7qrtvlgcvi" path="res://Scripts/html_tutorial_level2.gd" id="1_fddwe"]
-[ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_p7fjx"]
-[ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_cq88e"]
-[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="4_sr525"]
+[ext_resource type="Script" uid="uid://dt5cx14fn4drn" path="res://html_tutorial_topic2_level2.gd" id="1_ujluw"]
+[ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_ynnfu"]
+[ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_na5d4"]
+[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="4_0h2fj"]
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lcg5t"]
-texture = ExtResource("2_p7fjx")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jla2j"]
+texture = ExtResource("2_ynnfu")
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hlhew"]
-texture = ExtResource("4_sr525")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_oowif"]
+texture = ExtResource("4_0h2fj")
 expand_margin_left = 20.0
 expand_margin_top = 10.0
 expand_margin_right = 20.0
 expand_margin_bottom = 10.0
 region_rect = Rect2(67.79819, 53.921593, 184.30623, 72.180504)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_kavhg"]
-texture = ExtResource("4_sr525")
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_1dgoq"]
+texture = ExtResource("4_0h2fj")
 expand_margin_top = 10.0
 expand_margin_bottom = 15.0
 region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
 
-[node name="Control" type="Control" unique_id=763668142]
+[node name="Control" type="Control" unique_id=946631554]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_fddwe")
+script = ExtResource("1_ujluw")
 
-[node name="bg" type="Panel" parent="." unique_id=1628400022]
+[node name="bg" type="Panel" parent="." unique_id=1617243243]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_lcg5t")
+theme_override_styles/panel = SubResource("StyleBoxTexture_jla2j")
 
-[node name="Label" type="Label" parent="." unique_id=218729480]
+[node name="Label" type="Label" parent="." unique_id=1792433394]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -60,14 +60,14 @@ theme_override_constants/shadow_offset_x = -10
 theme_override_constants/shadow_offset_y = 10
 theme_override_constants/outline_size = 10
 theme_override_constants/shadow_outline_size = 1
-theme_override_fonts/font = ExtResource("3_cq88e")
+theme_override_fonts/font = ExtResource("3_na5d4")
 theme_override_font_sizes/font_size = 140
 text = "HEADING AND PARAGRAPHS"
 horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_mode = 3
 
-[node name="Question" type="Label" parent="." unique_id=722535393]
+[node name="Question" type="Label" parent="." unique_id=783710599]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -82,12 +82,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("3_cq88e")
+theme_override_fonts/font = ExtResource("3_na5d4")
 theme_override_font_sizes/font_size = 60
 text = "Goal: Learn how to organize your content using titles and blocks of text."
 autowrap_mode = 2
 
-[node name="Next" type="Button" parent="." unique_id=2135661652]
+[node name="Next" type="Button" parent="." unique_id=2116493310]
 layout_mode = 1
 anchors_preset = 7
 anchor_left = 0.5
@@ -102,15 +102,15 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("3_cq88e")
+theme_override_fonts/font = ExtResource("3_na5d4")
 theme_override_font_sizes/font_size = 60
-theme_override_styles/normal = SubResource("StyleBoxTexture_hlhew")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_hlhew")
-theme_override_styles/hover = SubResource("StyleBoxTexture_hlhew")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_hlhew")
+theme_override_styles/normal = SubResource("StyleBoxTexture_oowif")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_oowif")
+theme_override_styles/hover = SubResource("StyleBoxTexture_oowif")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_oowif")
 text = "START"
 
-[node name="buttons" type="VBoxContainer" parent="." unique_id=247022647]
+[node name="buttons" type="VBoxContainer" parent="." unique_id=492768211]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -122,17 +122,14 @@ offset_bottom = -120.0
 grow_vertical = 0
 theme_override_constants/separation = 30
 
-[node name="Back" type="Button" parent="buttons" unique_id=767951864]
+[node name="Back" type="Button" parent="buttons" unique_id=1899522621]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("3_cq88e")
+theme_override_fonts/font = ExtResource("3_na5d4")
 theme_override_font_sizes/font_size = 60
-theme_override_styles/normal = SubResource("StyleBoxTexture_kavhg")
-theme_override_styles/pressed = SubResource("StyleBoxTexture_kavhg")
-theme_override_styles/hover = SubResource("StyleBoxTexture_kavhg")
-theme_override_styles/disabled = SubResource("StyleBoxTexture_kavhg")
+theme_override_styles/normal = SubResource("StyleBoxTexture_1dgoq")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_1dgoq")
+theme_override_styles/hover = SubResource("StyleBoxTexture_1dgoq")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_1dgoq")
 text = "BACK"
-
-[connection signal="pressed" from="Next" to="." method="_on_next_pressed"]
-[connection signal="pressed" from="buttons/Back" to="." method="_on_back_pressed"]

@@ -79,7 +79,7 @@ func game_over() -> void:
 			next_level_button.pressed.connect(_on_next_level_pressed)
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
+	get_tree().change_scene_to_file("res://Html Scenes/html tutorial start.tscn")
 
 func _on_home_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/Menu.tscn")

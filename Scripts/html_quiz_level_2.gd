@@ -1,4 +1,4 @@
-extends Node
+extends Control
 
 @export var quiz: QuizTheme
 @export var color_right: Color
@@ -6,6 +6,7 @@ extends Node
 
 @onready var RestartButton = $Restart
 @onready var question_texts: Label = $Question/QuestionText
+@onready var next_level_button = $GameOver/NextLevel
 
 var buttons: Array[Button]
 var index: int
@@ -65,15 +66,19 @@ func game_over() -> void:
 	if correct_question != quiz.theme.size():
 		$GameOver/Score.text = str("You got ", correct_question, "/", quiz.theme.size())
 		$GameOver/Restart.show()
+		$GameOver.show()
 	else:
 		$GameOver/Score.text = str("Congrats you got ", correct_question, "/", quiz.theme.size())
 		$GameOver/Restart.hide()
-		# Unlock level 2 when player gets perfect score
+		$GameOver.show()
+		# Mark level 1 as completed and show next level button
 		LevelCore.lvl1_completed = true
-	$GameOver.show()
+		if next_level_button:
+			next_level_button.show()
+			next_level_button.pressed.connect(_on_next_level_pressed)
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://Html Scenes/html tutorial start2.tscn")
+	get_tree().change_scene_to_file("res://Html Scenes/html_start_level2.tscn")
 
 func _on_home_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/Menu.tscn")
@@ -81,3 +86,6 @@ func _on_home_pressed() -> void:
 
 func _on_restart_pressed() -> void:
 	get_tree().reload_current_scene()
+
+func _on_next_level_pressed() -> void:
+	get_tree().change_scene_to_file("res://Html Scenes/html tutorial start3.tscn")

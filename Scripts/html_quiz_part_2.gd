@@ -72,13 +72,13 @@ func game_over() -> void:
 		$GameOver/Restart.hide()
 		$GameOver.show()
 		# Mark level 1 as completed and show next level button
-		LevelCore.lvl1_completed = true
+		LevelCore.html_mini_quiz_completed_2 = true
 		if next_level_button:
 			next_level_button.show()
 			next_level_button.pressed.connect(_on_next_level_pressed)
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
+	get_tree().change_scene_to_file("res://Html Scenes/html tutorial start2.tscn")
 
 func _on_home_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/Menu.tscn")

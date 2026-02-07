@@ -21,7 +21,7 @@ func _on_x_button_pressed() -> void:
 	_ready()
 
 func _on_next_pressed() -> void:
-	get_tree().change_scene_to_file("res://Html Scenes/html quiz part3.tscn")
+	get_tree().change_scene_to_file("res://Html Scenes/html_quiz_level2.tscn")
 
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
+	get_tree().change_scene_to_file("res://Html Scenes/html_tutorial_level2.tscn")
