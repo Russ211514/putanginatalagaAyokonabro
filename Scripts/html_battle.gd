@@ -25,6 +25,7 @@ var ultimate_cooldown: float = 0.0
 var defend_cooldown: float = 0.0
 var player_turn_time: float = 0.0
 var player_turn_max_time: float = 35.0
+var player_timeout_triggered: bool = false
 
 var current_turn = "player"
 var player_defending = false
@@ -104,16 +105,20 @@ func _process(delta: float) -> void:
 		if player_turn_timer_label:
 			player_turn_timer_label.text = "Time: %.0fs" % max(0, player_turn_time)
 			player_turn_timer_label.show()
-		if player_turn_time <= 0:
+		if player_turn_time <= 0 and not player_timeout_triggered:
 			player_turn_time = 0
+			player_timeout_triggered = true
 			if player_turn_timer_label:
 				player_turn_timer_label.hide()
+			# Show timeout message
+			if question_info:
+				question_info.text = "TIME RAN OUT"
+				question_info.show()
+				# Wait 2 seconds then lose turn
+				await get_tree().create_timer(2.0).timeout
+				question_info.hide()
+				lose_turn()
 	elif current_turn == "enemy":
-		if player_turn_timer_label:
-			player_turn_timer_label.hide()
-			if current_turn == "player" and player_turn_time > 0:
-				player_turn_timer_label.show()
-	else:
 		if player_turn_timer_label:
 			player_turn_timer_label.hide()
 
@@ -247,6 +252,7 @@ func switch_turn() -> void:
 				player_turn_max_time = 35.0
 		
 		# Start player turn timer
+		player_timeout_triggered = false
 		player_turn_time = player_turn_max_time
 		if player_turn_timer_label and player_turn_max_time > 0:
 			player_turn_timer_label.show()

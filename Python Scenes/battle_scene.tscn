@@ -148,6 +148,7 @@ show_percentage = true
 
 [node name="MagicCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1852447080]
 layout_mode = 2
+theme_override_font_sizes/font_size = 25
 label_settings = SubResource("LabelSettings_ms847")
 
 [node name="UltimateCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1251371217]
