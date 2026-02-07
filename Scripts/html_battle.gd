@@ -24,8 +24,13 @@ var defend_cooldown: float = 0.0
 var current_turn = "player"
 var player_defending = false
 var current_action = ""
+var bot_difficulty: int = 1  # 0 = easy, 1 = normal, 2 = hard
 
 func _ready() -> void:
+	# Capture bot difficulty from parent scene
+	if has_meta("BotDifficulty"):
+		bot_difficulty = get_meta("BotDifficulty")
+	
 	lose.visible = false
 	win.visible = false
 	html_game_controller.visible = false
@@ -206,13 +211,44 @@ func enemy_turn() -> void:
 	await get_tree().create_timer(2.0).timeout
 	if not is_inside_tree(): return
 	
-	# Simple AI: always attack
-	var damage = 15
+	# Enemy chooses an action based on difficulty
+	var enemy_action = "fight"
+	if randf() > 0.5:
+		enemy_action = "magic"
+	
+	# Enemy answers question with accuracy based on difficulty
+	var is_correct = _enemy_answer_correct(bot_difficulty, enemy_action)
+	
+	var damage = 0
+	if is_correct:
+		match enemy_action:
+			"fight":
+				damage = 10
+			"magic":
+				damage = 15
+	else:
+		# Enemy gets question wrong, minimal/no damage
+		damage = 0
+	
 	if player_defending:
 		damage *= 0.75
+	
 	player_health_bar.health -= damage
 	if not check_victory():
 		switch_turn()
+
+func _enemy_answer_correct(difficulty: int, action: String) -> bool:
+	# Based on difficulty, determine if enemy answers correctly
+	# 0 = easy (often wrong), 1 = normal (occasionally wrong), 2 = hard (never wrong)
+	match difficulty:
+		0:  # Easy - enemy gets it wrong 70% of the time
+			return randf() > 0.7
+		1:  # Normal - enemy gets it wrong 40% of the time
+			return randf() > 0.4
+		2:  # Hard - enemy never gets it wrong
+			return true
+		_:  # Default to normal
+			return randf() > 0.4
 
 func lose_turn() -> void:
 	# Player loses their turn without taking action

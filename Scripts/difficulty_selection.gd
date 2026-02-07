@@ -25,6 +25,7 @@ func _on_start_pressed() -> void:
 	game_instance.set("IsBot", true)
 	game_instance.set("PlayerName", DataSave.data.PlayerName)
 	game_instance.set("BotDifficulty", bot_diff)
+	game_instance.set_meta("BotDifficulty", bot_diff)
 	get_tree().current_scene.add_child(game_instance)
 	$CanvasLayer.visible = false
 
