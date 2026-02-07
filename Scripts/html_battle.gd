@@ -200,6 +200,7 @@ func switch_turn() -> void:
 		current_turn = "enemy"
 		if info:
 			info.text = "ENEMY'S TURN"
+			info.show()
 		enemy_turn()
 	else:
 		current_turn = "player"
