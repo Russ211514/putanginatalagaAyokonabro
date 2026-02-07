@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dqpcqek0mbcgu"]
 
-[ext_resource type="Script" uid="uid://bhhjfius8w8e6" path="res://final_level_quiz_html.gd" id="1_d42lx"]
+[ext_resource type="Script" uid="uid://bhhjfius8w8e6" path="res://Scripts/final_level_quiz_html.gd" id="1_d42lx"]
 [ext_resource type="Resource" uid="uid://0xyvrwshcyol" path="res://Scripts/Resource/varied/themes/HtmlFinalLevelTheme.tres" id="2_ttd3v"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_yrnbm"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_ttd3v"]

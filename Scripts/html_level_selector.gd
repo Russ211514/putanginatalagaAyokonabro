@@ -3,6 +3,9 @@ extends Control
 @onready var level1: TextureButton = $CanvasLayer/HBoxContainer/level1
 @onready var level2: TextureButton = $CanvasLayer/HBoxContainer/level2
 @onready var level3: TextureButton = $CanvasLayer/HBoxContainer/level3
+@onready var level1_label: Label = $CanvasLayer/HBoxContainer/level1/Label
+@onready var level2_label: Label = $CanvasLayer/HBoxContainer/level2/Label
+@onready var level3_label: Label = $CanvasLayer/HBoxContainer/level3/Label
 
 func _ready() -> void:
 	update_level_buttons()
@@ -19,14 +22,20 @@ func update_level_buttons() -> void:
 	# Level 1 is always available
 	if level1:
 		level1.disabled = false
+		if level1_label:
+			level1_label.visible = true
 	
 	# Level 2 unlocks after completing the html quiz part 2
 	if level2:
 		level2.disabled = not LevelCore.lvl1_completed
+		if level2_label:
+			level2_label.visible = not level2.disabled
 	
 	# Level 3 unlocks after level 2 is completed
 	if level3:
 		level3.disabled = not LevelCore.lvl2_completed
+		if level3_label:
+			level3_label.visible = not level3.disabled
 
 func _on_level_pressed(level_number: int) -> void:
 	match level_number:
