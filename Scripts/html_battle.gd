@@ -12,6 +12,7 @@ extends Control
 @onready var win: Label = $BattleLayout/Win
 @onready var defend_cooldown_label: = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/DefendCooldownLabel
 @onready var info: Label = $BattleLayout/Info
+@onready var question_info: Label = $BattleLayout/QuestionInfo
 
 @onready var magic_button = $BattleLayout/Battle/Options/Options/Magic
 @onready var ultimate_button = $BattleLayout/Battle/Options/Options/Ultimate
@@ -32,6 +33,7 @@ func _ready() -> void:
 	if has_meta("BotDifficulty"):
 		bot_difficulty = get_meta("BotDifficulty")
 	
+	question_info.visible = false
 	lose.visible = false
 	win.visible = false
 	html_game_controller.visible = false
@@ -222,11 +224,14 @@ func enemy_turn() -> void:
 	# Enemy answers question with accuracy based on difficulty
 	var is_correct = _enemy_answer_correct(bot_difficulty, enemy_action)
 	
-	# Display result in info label
+	# Display result in question info label
 	if is_correct:
-		info.text = "ENEMY GOT IT RIGHT"
+		question_info.text = "ENEMY GOT IT RIGHT"
 	else:
-		info.text = "ENEMY GOT IT WRONG"
+		question_info.text = "ENEMY GOT IT WRONG"
+	question_info.visible = true
+	await get_tree().create_timer(2.0).timeout
+	question_info.visible = false
 	
 	var damage = 0
 	if is_correct:
