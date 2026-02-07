@@ -242,7 +242,7 @@ func _enemy_answer_correct(difficulty: int, action: String) -> bool:
 	# 0 = easy (often wrong), 1 = normal (occasionally wrong), 2 = hard (never wrong)
 	match difficulty:
 		0:  # Easy - enemy gets it wrong 70% of the time
-			return randf() > 0.7
+			return randf() > 0.6
 		1:  # Normal - enemy gets it wrong 40% of the time
 			return randf() > 0.4
 		2:  # Hard - enemy never gets it wrong
