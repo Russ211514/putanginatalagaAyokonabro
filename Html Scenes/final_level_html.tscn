@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://cqxwt12wnh215"]
 
-[ext_resource type="Script" uid="uid://bggd2grbwwose" path="res://Scripts/final_level_html.gd" id="1_d8qry"]
-[ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="1_gk8ci"]
-[ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="2_d8qry"]
-[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="3_wf3ri"]
+[ext_resource type="Script" uid="uid://bggd2grbwwose" path="res://Scripts/final_level_html.gd" id="1_17u1f"]
+[ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_3pmnl"]
+[ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_0adqw"]
+[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="4_elt50"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_hdrdx"]
-texture = ExtResource("1_gk8ci")
+texture = ExtResource("2_3pmnl")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_34tcq"]
-texture = ExtResource("3_wf3ri")
+texture = ExtResource("4_elt50")
 expand_margin_left = 20.0
 expand_margin_top = 10.0
 expand_margin_right = 20.0
@@ -17,13 +17,13 @@ expand_margin_bottom = 10.0
 region_rect = Rect2(67.79819, 53.921593, 184.30623, 72.180504)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cu3i1"]
-texture = ExtResource("3_wf3ri")
+texture = ExtResource("4_elt50")
 expand_margin_top = 10.0
 expand_margin_bottom = 15.0
 region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8718q"]
-texture = ExtResource("3_wf3ri")
+texture = ExtResource("4_elt50")
 region_rect = Rect2(67.68807, 53.68726, 184.39017, 72.433304)
 
 [node name="Control2" type="Control" unique_id=1592765906]
@@ -33,7 +33,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_d8qry")
+script = ExtResource("1_17u1f")
 
 [node name="Panel" type="Panel" parent="." unique_id=61120080]
 layout_mode = 1
@@ -65,7 +65,7 @@ theme_override_constants/shadow_offset_x = -10
 theme_override_constants/shadow_offset_y = 10
 theme_override_constants/outline_size = 10
 theme_override_constants/shadow_outline_size = 1
-theme_override_fonts/font = ExtResource("2_d8qry")
+theme_override_fonts/font = ExtResource("3_0adqw")
 theme_override_font_sizes/font_size = 155
 text = "Final Mastery Test"
 horizontal_alignment = 1
@@ -85,7 +85,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("2_d8qry")
+theme_override_fonts/font = ExtResource("3_0adqw")
 theme_override_font_sizes/font_size = 60
 text = "This final mastery level consist of everything you have learned in this level of the tutorial. Goodluck"
 autowrap_mode = 2
@@ -104,7 +104,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("2_d8qry")
+theme_override_fonts/font = ExtResource("3_0adqw")
 theme_override_font_sizes/font_size = 40
 theme_override_styles/normal = SubResource("StyleBoxTexture_34tcq")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_34tcq")
@@ -127,7 +127,7 @@ theme_override_constants/separation = 30
 layout_mode = 2
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_constants/outline_size = 10
-theme_override_fonts/font = ExtResource("2_d8qry")
+theme_override_fonts/font = ExtResource("3_0adqw")
 theme_override_font_sizes/font_size = 60
 theme_override_styles/normal = SubResource("StyleBoxTexture_cu3i1")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_cu3i1")
