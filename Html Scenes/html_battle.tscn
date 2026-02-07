@@ -147,19 +147,21 @@ show_percentage = true
 
 [node name="MagicCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=61217655]
 layout_mode = 2
+theme_override_font_sizes/font_size = 30
 label_settings = SubResource("LabelSettings_hfshi")
 
 [node name="UltimateCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1660538614]
 layout_mode = 2
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 30
 
 [node name="DefendCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=269984699]
 layout_mode = 2
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 30
 
 [node name="PlayerTurnTimerLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1234567891]
 layout_mode = 2
-theme_override_font_sizes/font_size = 25
+theme_override_font_sizes/font_size = 30
+label_settings = SubResource("LabelSettings_hfshi")
 text = "Time: 35s"
 
 [node name="Options" parent="BattleLayout/Battle" unique_id=1829402379 instance=ExtResource("3_jblth")]
