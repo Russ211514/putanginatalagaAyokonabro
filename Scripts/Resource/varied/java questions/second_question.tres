@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="QuizQuestion" load_steps=2 format=3 uid="uid://c6dhrc8d7x58y"]
+
+[ext_resource type="Script" uid="uid://bwi7na0gcdaoc" path="res://Scripts/resources/question.gd" id="1_i14wq"]
+
+[resource]
+script = ExtResource("1_i14wq")
+Question_Info = "Which of the following is not a valid Java access modifier?"
+options = Array[String](["private.", "protected.", "public.", "internal."])
+correct = "internal."
+metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

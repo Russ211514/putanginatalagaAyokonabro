@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://b2xgn7kfu62ix"]
+
+[ext_resource type="Texture2D" uid="uid://r15bm3o1mlvn" path="res://Art Assets/python snik/python-blue.png" id="1_pfu64"]
+
+[node name="TextureButton" type="TextureButton" unique_id=2106605373]
+offset_left = 277.0
+offset_top = 590.7143
+offset_right = 298.0
+offset_bottom = 617.7143
+scale = Vector2(8, 8)
+texture_normal = ExtResource("1_pfu64")
+texture_pressed = ExtResource("1_pfu64")
+texture_hover = ExtResource("1_pfu64")
+texture_disabled = ExtResource("1_pfu64")
+texture_focused = ExtResource("1_pfu64")

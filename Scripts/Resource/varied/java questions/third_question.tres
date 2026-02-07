@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="QuizQuestion" load_steps=2 format=3 uid="uid://d4iibbldnevwc"]
+
+[ext_resource type="Script" uid="uid://bwi7na0gcdaoc" path="res://Scripts/resources/question.gd" id="1_6vwvb"]
+
+[resource]
+script = ExtResource("1_6vwvb")
+Question_Info = "What does the \"JVM\" in Java stand for?"
+options = Array[String](["Java Verified Machine.", "Java Virtual Machine.", "Java Visual Module.", "Java Variable Method."])
+correct = "Java Virtual Machine."
+metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

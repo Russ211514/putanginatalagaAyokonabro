@@ -1,0 +1,233 @@
+[gd_scene load_steps=10 format=3 uid="uid://bmmwetkdm8rsm"]
+
+[ext_resource type="Script" uid="uid://6qvysttqert6" path="res://Scripts/java_tutorial_start.gd" id="1_3x7cu"]
+[ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_lfox5"]
+[ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_usrux"]
+[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="4_kqrrn"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0bkgo"]
+texture = ExtResource("2_lfox5")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_snc3w"]
+texture = ExtResource("4_kqrrn")
+expand_margin_left = 15.0
+expand_margin_right = 15.0
+region_rect = Rect2(67.68807, 53.68726, 184.39017, 72.433304)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_msupd"]
+texture = ExtResource("4_kqrrn")
+expand_margin_left = 20.0
+expand_margin_top = 10.0
+expand_margin_right = 20.0
+expand_margin_bottom = 10.0
+region_rect = Rect2(67.79819, 53.921593, 184.30623, 72.180504)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lfjtu"]
+texture = ExtResource("4_kqrrn")
+texture_margin_left = 20.0
+texture_margin_top = 10.0
+texture_margin_right = 20.0
+texture_margin_bottom = 15.0
+region_rect = Rect2(67.177315, 53.123344, 185.42703, 73.555244)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_3x7cu"]
+texture = ExtResource("4_kqrrn")
+expand_margin_top = 10.0
+expand_margin_bottom = 15.0
+region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_3x7cu")
+
+[node name="bg" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_0bkgo")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -666.5
+offset_top = -447.0
+offset_right = 666.5
+offset_bottom = -293.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = -10
+theme_override_constants/shadow_offset_y = 10
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 1
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 175
+text = "WHAT IS JAVA?"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Question" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -514.0
+offset_top = -267.0
+offset_right = 514.0
+offset_bottom = 346.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 35
+text = "Java is a widely-used programming language that lets you create software that runs on many different devices. It's popular for building Android apps, large company systems, and web applications. Java is known for its stability and security features, which make it a trusted choice for important business and banking software.
+
+One of Java's key features is that it's \"platform independent\" – this means you can write a program once and run it on Windows, Mac, Linux, or other systems without changes. This works because Java uses a special system called the Java Virtual Machine (JVM) that translates Java code so different computers can understand it."
+autowrap_mode = 2
+
+[node name="Understand" type="Button" parent="."]
+layout_mode = 0
+offset_left = 452.0
+offset_top = 867.0
+offset_right = 897.0
+offset_bottom = 958.05145
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_snc3w")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_snc3w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_snc3w")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_snc3w")
+text = "I dont understand"
+autowrap_mode = 2
+
+[node name="Next" type="Button" parent="."]
+layout_mode = 0
+offset_left = 1027.0
+offset_top = 879.582
+offset_right = 1387.0
+offset_bottom = 948.0
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_msupd")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_msupd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_msupd")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_msupd")
+text = "NEXT"
+
+[node name="Explanation" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -445.00012
+offset_top = -239.0
+offset_right = 425.0
+offset_bottom = 317.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Label" type="Label" parent="Explanation"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -113.0
+offset_top = 6.0
+offset_right = 113.0
+offset_bottom = 37.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 35
+text = "EXPLANATION"
+
+[node name="X button" type="Button" parent="Explanation"]
+layout_mode = 0
+offset_left = 836.0001
+offset_top = -22.0
+offset_right = 900.0001
+offset_bottom = 42.0
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxTexture_lfjtu")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_lfjtu")
+theme_override_styles/hover = SubResource("StyleBoxTexture_lfjtu")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_lfjtu")
+text = "X"
+
+[node name="simple explanation" type="Label" parent="Explanation"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -413.00006
+offset_top = -230.0
+offset_right = 413.00006
+offset_bottom = 235.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 30
+text = "Java is a computer language used to write instructions for software, like apps, games, and websites. It was designed so that the same Java program can work on different devices, such as Windows computers, Macs, and phones. This is possible because of a part of Java called the \"Java Virtual Machine\", which acts like a translator between your code and the device you are using.
+
+It is known for being structured, secure, and widely used in big companies and Android apps. Many people learn Java because it helps teach good programming habits and is useful in many types of projects."
+autowrap_mode = 2
+
+[node name="buttons" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 121.0
+offset_top = -173.0
+offset_right = 306.5263
+offset_bottom = -120.0
+grow_vertical = 0
+theme_override_constants/separation = 30
+
+[node name="Back" type="Button" parent="buttons"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_usrux")
+theme_override_font_sizes/font_size = 60
+theme_override_styles/normal = SubResource("StyleBoxTexture_3x7cu")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_3x7cu")
+theme_override_styles/hover = SubResource("StyleBoxTexture_3x7cu")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_3x7cu")
+text = "BACK"
+
+[connection signal="pressed" from="Understand" to="." method="_on_understand_pressed"]
+[connection signal="pressed" from="Next" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="Explanation/X button" to="." method="_on_x_button_pressed"]
+[connection signal="pressed" from="buttons/Back" to="." method="_on_back_pressed"]

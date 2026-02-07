@@ -1,0 +1,154 @@
+[gd_scene load_steps=6 format=3 uid="uid://et2uklloovj6"]
+
+[ext_resource type="Texture2D" uid="uid://ce8xn6c21jmwu" path="res://Art Assets/buttons/lock_button_level_selection.png" id="1_22lal"]
+[ext_resource type="Script" uid="uid://bgbo2e668fkg4" path="res://Scripts/level_selector.gd" id="1_b8t80"]
+[ext_resource type="Texture2D" uid="uid://cyh0kegeul5ab" path="res://Art Assets/backgrounds/background_level_selection.png" id="1_x3xpc"]
+[ext_resource type="Texture2D" uid="uid://gfhatt7lgafe" path="res://Art Assets/buttons/blank_button_level_selection.png" id="4_t6kw3"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sk2hl"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_b8t80")
+
+[node name="BG" type="ColorRect" parent="."]
+offset_left = 1.0
+offset_right = 1918.0
+offset_bottom = 1080.0
+color = Color(1, 0, 0, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="BG"]
+position = Vector2(960, 542)
+scale = Vector2(6.0187497, 6.0111113)
+texture = ExtResource("1_x3xpc")
+
+[node name="Label" type="Label" parent="."]
+offset_right = 1921.0
+offset_bottom = 257.0
+theme_override_font_sizes/font_size = 150
+text = "LEVEL SELECT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label2" type="Label" parent="."]
+offset_left = -597.0
+offset_top = 241.0
+offset_right = 1324.0
+offset_bottom = 498.0
+theme_override_font_sizes/font_size = 50
+text = "LEVEL 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label3" type="Label" parent="."]
+offset_left = -29.0
+offset_top = 241.0
+offset_right = 1892.0
+offset_bottom = 498.0
+theme_override_font_sizes/font_size = 50
+text = "LEVEL 2"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Label4" type="Label" parent="."]
+offset_left = 535.0
+offset_top = 241.0
+offset_right = 2456.0
+offset_bottom = 498.0
+theme_override_font_sizes/font_size = 50
+text = "LEVEL 3"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 168.0
+offset_top = 434.0
+offset_right = 558.0
+offset_bottom = 824.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_sk2hl")
+
+[node name="Button2" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 731.0
+offset_top = 434.0
+offset_right = 1121.0
+offset_bottom = 824.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_sk2hl")
+
+[node name="Button3" type="Button" parent="."]
+unique_name_in_owner = true
+offset_left = 1302.0
+offset_top = 434.0
+offset_right = 1692.0
+offset_bottom = 824.0
+theme_override_styles/normal = SubResource("StyleBoxFlat_sk2hl")
+
+[node name="lvl1_completed" type="ColorRect" parent="."]
+offset_left = 167.0
+offset_top = 434.0
+offset_right = 558.0
+offset_bottom = 824.0
+color = Color(0, 0.5568628, 0, 1)
+
+[node name="lvl2_completed" type="ColorRect" parent="."]
+offset_left = 731.0
+offset_top = 434.0
+offset_right = 1122.0
+offset_bottom = 824.0
+color = Color(0, 0.5568628, 0, 1)
+
+[node name="lvl3_completed" type="ColorRect" parent="."]
+offset_left = 1304.0
+offset_top = 434.0
+offset_right = 1695.0
+offset_bottom = 824.0
+color = Color(0, 0.5568628, 0, 1)
+
+[node name="lvl1_locked" type="ColorRect" parent="."]
+offset_left = 167.0
+offset_top = 434.0
+offset_right = 558.0
+offset_bottom = 824.0
+color = Color(1, 0, 0, 1)
+
+[node name="lvl2_locked" type="ColorRect" parent="."]
+offset_left = 731.0
+offset_top = 434.0
+offset_right = 1122.0
+offset_bottom = 824.0
+color = Color(1, 0, 0, 1)
+
+[node name="lvl3_locked" type="ColorRect" parent="."]
+offset_left = 1304.0
+offset_top = 434.0
+offset_right = 1695.0
+offset_bottom = 824.0
+color = Color(1, 0, 0, 1)
+
+[node name="LockButtonLevelSelection" type="Sprite2D" parent="."]
+position = Vector2(926.99994, 628)
+scale = Vector2(7.5357146, 7.458424)
+texture = ExtResource("1_22lal")
+
+[node name="LockButtonLevelSelection2" type="Sprite2D" parent="."]
+position = Vector2(1500.0001, 628)
+scale = Vector2(7.5357146, 7.458424)
+texture = ExtResource("1_22lal")
+
+[node name="BlankButtonLevelSelection" type="Sprite2D" parent="."]
+position = Vector2(361.00003, 630.0001)
+scale = Vector2(7.536, 7.536)
+texture = ExtResource("4_t6kw3")
+
+[node name="Label5" type="Label" parent="."]
+offset_left = 276.0
+offset_top = 489.0
+offset_right = 452.0
+offset_bottom = 753.0
+theme_override_constants/shadow_offset_x = -20
+theme_override_constants/shadow_offset_y = 20
+theme_override_constants/outline_size = 20
+theme_override_font_sizes/font_size = 300
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1

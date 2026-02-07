@@ -1,0 +1,223 @@
+[gd_scene format=3 uid="uid://tnna7c485oeg"]
+
+[ext_resource type="Script" uid="uid://mg3jstwu08ab" path="res://Scripts/difficulty_selection.gd" id="1_script"]
+[ext_resource type="Script" uid="uid://d4cg4uradg8xq" path="res://Scripts/html_battle.gd" id="2_pbse8"]
+[ext_resource type="Theme" uid="uid://2q3vbk6bmh2r" path="res://Themes/default_theme.tres" id="2_theme"]
+[ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_v1aw8"]
+[ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_font"]
+[ext_resource type="Script" uid="uid://b4h7jgw5xhajg" path="res://Scripts/background_sprite.gd" id="3_jo86m"]
+[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="4_4fm3b"]
+[ext_resource type="PackedScene" uid="uid://cvj375674d1g6" path="res://Scenes/window_default.tscn" id="5_b1hfp"]
+[ext_resource type="PackedScene" uid="uid://cjbitdt03r8sc" path="res://Scenes/health_bar.tscn" id="7_rjq5m"]
+[ext_resource type="Script" uid="uid://hwl1a3d4oayi" path="res://Scripts/options.gd" id="8_iq6na"]
+[ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://player/html_player.tscn" id="9_03f6m"]
+[ext_resource type="PackedScene" uid="uid://cu4th8f6oig" path="res://enemy/html_enemy.tscn" id="10_peb0t"]
+[ext_resource type="PackedScene" uid="uid://d4kh5lhm8k6ck" path="res://Html Scenes/html_question_battle.tscn" id="11_hu1l7"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_hfshi"]
+font = ExtResource("3_font")
+font_size = 25
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ms847"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4ggb"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wb0gu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_84vmf"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xdap8"]
+
+[sub_resource type="Theme" id="Theme_ihlha"]
+Button/font_sizes/font_size = 40
+Button/styles/disabled = SubResource("StyleBoxEmpty_ms847")
+Button/styles/focus = SubResource("StyleBoxEmpty_f4ggb")
+Button/styles/hover = SubResource("StyleBoxEmpty_wb0gu")
+Button/styles/normal = SubResource("StyleBoxEmpty_84vmf")
+Button/styles/pressed = SubResource("StyleBoxEmpty_xdap8")
+
+[sub_resource type="PackedScene" id="PackedScene_jmly6"]
+_bundled = {
+"conn_count": 0,
+"conns": PackedInt32Array(),
+"editable_instances": [],
+"id_paths": [PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array(), PackedInt32Array()],
+"names": PackedStringArray("Control", "Control", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "grow_horizontal", "grow_vertical", "script", "Background_Sprite", "Sprite2D", "position", "scale", "script", "BattleLayout", "CanvasLayer", "Battle", "Control", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "grow_horizontal", "grow_vertical", "theme", "metadata/_edit_use_anchors_", "Bottom", "HBoxContainer", "custom_minimum_size", "layout_mode", "anchors_preset", "anchor_left", "anchor_top", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "theme_override_constants/separation", "alignment", "Enemy", "layout_mode", "patch_margin_left", "patch_margin_top", "patch_margin_right", "patch_margin_bottom", "MarginContainer", "MarginContainer", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "VBoxContainer", "VBoxContainer", "layout_mode", "Name", "Label", "layout_mode", "size_flags_vertical", "theme_override_fonts/font", "theme_override_font_sizes/font_size", "text", "horizontal_alignment", "HealthBar", "layout_mode", "show_percentage", "Player", "layout_mode", "size_flags_stretch_ratio", "patch_margin_left", "patch_margin_top", "patch_margin_right", "patch_margin_bottom", "MarginContainer", "MarginContainer", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "VBoxContainer", "VBoxContainer", "layout_mode", "Name", "Label", "layout_mode", "size_flags_vertical", "theme_override_fonts/font", "theme_override_font_sizes/font_size", "text", "HealthBar", "layout_mode", "value", "show_percentage", "MagicCooldownLabel", "Label", "layout_mode", "label_settings", "UltimateCooldownLabel", "Label", "layout_mode", "theme_override_font_sizes/font_size", "DefendCooldownLabel", "Label", "layout_mode", "theme_override_font_sizes/font_size", "Options", "custom_minimum_size", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "size_flags_stretch_ratio", "patch_margin_left", "patch_margin_top", "patch_margin_right", "patch_margin_bottom", "Options", "VBoxContainer", "layout_mode", "anchors_preset", "anchor_right", "anchor_bottom", "grow_horizontal", "grow_vertical", "theme_override_constants/separation", "script", "Fight", "Button", "layout_mode", "focus_neighbor_bottom", "theme", "text", "Magic", "Button", "layout_mode", "text", "Defend", "Button", "layout_mode", "text", "Ultimate", "Button", "layout_mode", "text", "Player", "Control", "anchors_preset", "offset_right", "offset_bottom", "script", "TextureButton", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "Enemies", "Control", "anchors_preset", "offset_right", "offset_bottom", "script", "TextureButton", "layout_mode", "offset_left", "offset_top", "offset_right", "offset_bottom", "Control", "anchors_preset", "anchor_left", "anchor_top", "anchor_right", "anchor_bottom", "Lose", "Label", "anchors_preset", "anchor_left", "anchor_top", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "theme", "theme_override_font_sizes/font_size", "text", "horizontal_alignment", "vertical_alignment", "metadata/_edit_use_anchors_", "Win", "Label", "anchors_preset", "anchor_left", "anchor_top", "anchor_right", "anchor_bottom", "offset_left", "offset_top", "offset_right", "offset_bottom", "grow_horizontal", "grow_vertical", "theme", "theme_override_font_sizes/font_size", "text", "horizontal_alignment", "vertical_alignment", "metadata/_edit_use_anchors_"),
+"node_count": 31,
+"node_ids": PackedInt32Array(2086006973, 1188463556, 432606559, 1836120327, 1185919253, 855602714, 806121642, 522911525, 1385310593, 1586567242, 1301334114, 1489975070, 1340569006, 1540985690, 183023833, 61217655, 1660538614, 269984699, 1829402379, 774202889, 1519493644, 58129960, 682475961, 122854244, 768413564, 967598217, 47021781, 542823120, 818718884, 1306941001, 962400168),
+"node_paths": [NodePath("."), NodePath("."), NodePath("./BattleLayout"), NodePath("./BattleLayout/Battle"), NodePath("./BattleLayout/Battle/Bottom"), NodePath("./BattleLayout/Battle/Bottom/Enemy"), NodePath("./BattleLayout/Battle/Bottom/Enemy/MarginContainer"), NodePath("./BattleLayout/Battle/Bottom/Enemy/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle/Bottom/Enemy/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle/Bottom"), NodePath("./BattleLayout/Battle/Bottom/Player"), NodePath("./BattleLayout/Battle/Bottom/Player/MarginContainer"), NodePath("./BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer"), NodePath("./BattleLayout/Battle"), NodePath("./BattleLayout/Battle/Options"), NodePath("./BattleLayout/Battle/Options/Options"), NodePath("./BattleLayout/Battle/Options/Options"), NodePath("./BattleLayout/Battle/Options/Options"), NodePath("./BattleLayout/Battle/Options/Options"), NodePath("./BattleLayout/Battle"), NodePath("./BattleLayout/Battle/Player"), NodePath("./BattleLayout/Battle"), NodePath("./BattleLayout/Battle/Enemies"), NodePath("./BattleLayout"), NodePath("./BattleLayout"), NodePath("./BattleLayout")],
+"nodes": PackedInt32Array(-1, -1, 1, 0, -1, 7, 2, 0, 3, 1, 4, 2, 5, 3, 6, 4, 7, 5, 8, 6, 0, 1073741824, 0, 10, 9, -1, 3, 11, 7, 12, 8, 13, 9, 0, 1073741825, 0, 15, 14, -1, 0, 0, 1073741826, 0, 17, 16, -1, 8, 18, 10, 19, 11, 20, 12, 21, 13, 22, 14, 23, 15, 24, 16, 25, 17, 0, 1073741827, 0, 27, 26, -1, 15, 28, 18, 29, 19, 30, 20, 31, 21, 32, 22, 33, 23, 34, 24, 35, 25, 36, 26, 37, 27, 38, 28, 39, 29, 40, 30, 41, 31, 42, 32, 0, 1073741828, 0, 2147483647, 43, 33, 5, 44, 34, 45, 35, 46, 36, 47, 37, 48, 38, 0, 1073741829, 0, 50, 49, -1, 10, 51, 39, 52, 40, 53, 41, 54, 42, 55, 43, 56, 44, 57, 45, 58, 46, 59, 47, 60, 48, 0, 1073741830, 0, 62, 61, -1, 1, 63, 49, 0, 1073741831, 0, 65, 64, -1, 6, 66, 50, 67, 51, 68, 52, 69, 53, 70, 54, 71, 55, 0, 1073741832, 0, 2147483647, 72, 56, 2, 73, 57, 74, 58, 0, 1073741833, 0, 2147483647, 75, 59, 6, 76, 60, 77, 61, 78, 62, 79, 63, 80, 64, 81, 65, 0, 1073741834, 0, 83, 82, -1, 10, 84, 66, 85, 67, 86, 68, 87, 69, 88, 70, 89, 71, 90, 72, 91, 73, 92, 74, 93, 75, 0, 1073741835, 0, 95, 94, -1, 1, 96, 76, 0, 1073741836, 0, 98, 97, -1, 5, 99, 77, 100, 78, 101, 79, 102, 80, 103, 81, 0, 1073741837, 0, 2147483647, 104, 82, 3, 105, 83, 106, 84, 107, 85, 0, 1073741838, 0, 109, 108, -1, 2, 110, 86, 111, 87, 0, 1073741839, 0, 113, 112, -1, 2, 114, 88, 115, 89, 0, 1073741840, 0, 117, 116, -1, 2, 118, 90, 119, 91, 0, 1073741841, 0, 2147483647, 120, 92, 11, 121, 93, 122, 94, 123, 95, 124, 96, 125, 97, 126, 98, 127, 99, 128, 100, 129, 101, 130, 102, 131, 103, 0, 1073741842, 0, 133, 132, -1, 8, 134, 104, 135, 105, 136, 106, 137, 107, 138, 108, 139, 109, 140, 110, 141, 111, 0, 1073741843, 0, 143, 142, -1, 4, 144, 112, 145, 113, 146, 114, 147, 115, 0, 1073741844, 0, 149, 148, -1, 2, 150, 116, 151, 117, 0, 1073741845, 0, 153, 152, -1, 2, 154, 118, 155, 119, 0, 1073741846, 0, 157, 156, -1, 2, 158, 120, 159, 121, 0, 1073741847, 0, 161, 160, -1, 4, 162, 122, 163, 123, 164, 124, 165, 125, 0, 1073741848, 0, 2147483647, 166, 126, 5, 167, 127, 168, 128, 169, 129, 170, 130, 171, 131, 0, 1073741849, 0, 173, 172, -1, 4, 174, 132, 175, 133, 176, 134, 177, 135, 0, 1073741850, 0, 2147483647, 178, 136, 5, 179, 137, 180, 138, 181, 139, 182, 140, 183, 141, 0, 1073741851, 0, 2147483647, 184, 142, 5, 185, 143, 186, 144, 187, 145, 188, 146, 189, 147, 0, 1073741852, 0, 191, 190, -1, 17, 192, 148, 193, 149, 194, 150, 195, 151, 196, 152, 197, 153, 198, 154, 199, 155, 200, 156, 201, 157, 202, 158, 203, 159, 204, 160, 205, 161, 206, 162, 207, 163, 208, 164, 0, 1073741853, 0, 210, 209, -1, 17, 211, 165, 212, 166, 213, 167, 214, 168, 215, 169, 216, 170, 217, 171, 218, 172, 219, 173, 220, 174, 221, 175, 222, 176, 223, 177, 224, 178, 225, 179, 226, 180, 227, 181, 0),
+"variants": [3, 15, 1.0, 1.0, 2, 2, ExtResource("2_pbse8"), Vector2(961.6667, 539.5), Vector2(5.983333, 5.983333), ExtResource("3_jo86m"), 3, 15, 1.0, 1.0, 2, 2, ExtResource("2_theme"), true, Vector2(870, 240), 1, 7, 0.5, 1.0, 0.5, 1.0, -511.0, -266.0, 511.0, -26.0, 2, 0, 0, 1, ExtResource("5_b1hfp"), 2, 10, 10, 10, 10, 1, 15, 1.0, 1.0, 784.0, -740.0, 948.0, -740.0, 2, 2, 2, 2, 1, ExtResource("3_font"), 40, "ENEMY", 2, ExtResource("7_rjq5m"), 2, true, ExtResource("5_b1hfp"), 2, 1.5, 10, 10, 10, 10, 1, 15, 1.0, 1.0, -744.0, -737.0, -744.0, -737.0, 2, 2, 2, 2, 1, ExtResource("3_font"), 40, "PLAYER", ExtResource("7_rjq5m"), 2, 150.0, true, 2, SubResource("LabelSettings_hfshi"), 2, 25, 2, 25, ExtResource("5_b1hfp"), Vector2(240, 240), 0, 586.0, 813.0, 826.0, 1053.0, 1.5, 10, 10, 10, 10, 1, 15, 1.0, 1.0, 2, 2, 25, ExtResource("8_iq6na"), 2, NodePath("../Magic"), SubResource("Theme_ihlha"), "FIGHT", 2, "MAGIC", 2, "DEFEND", 2, "ULTIMATE", 0, 40.0, 40.0, ExtResource("8_iq6na"), ExtResource("9_03f6m"), 0, 154.0, 483.0, 203.0, 538.0, 0, 40.0, 40.0, ExtResource("8_iq6na"), ExtResource("10_peb0t"), 0, 1475.0, 485.0, 1524.0, 540.0, ExtResource("11_hu1l7"), 8, 0.5, 0.5, 0.5, 0.5, 8, 0.5, 0.5, 0.5, 0.5, -20.0, -7.5, 20.0, 7.5, 2, 2, ExtResource("2_theme"), 100, "YOU LOSE!", 1, 1, true, 8, 0.5, 0.5, 0.5, 0.5, -20.0, -7.5, 20.0, 7.5, 2, 2, ExtResource("2_theme"), 100, "YOU WIN!", 1, 1, true],
+"version": 3
+}
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_qbug4"]
+texture = ExtResource("2_v1aw8")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wg653"]
+texture = ExtResource("4_4fm3b")
+region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_assmo"]
+texture = ExtResource("4_4fm3b")
+region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7pi3i"]
+texture = ExtResource("4_4fm3b")
+region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ctsqj"]
+texture = ExtResource("4_4fm3b")
+region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_d542t"]
+load_path = "res://.godot/imported/stonebutton.png-cd0061a5da0cd8d5a9eefbbb3b8373e6.ctex"
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_srd6c"]
+texture = SubResource("CompressedTexture2D_d542t")
+region_rect = Rect2(67.81638, 53.940723, 184.29651, 72.11586)
+
+[node name="Control" type="Control" unique_id=130629810]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_script")
+game_scene = SubResource("PackedScene_jmly6")
+
+[node name="bg" type="Panel" parent="." unique_id=1218202305]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_qbug4")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1607455279]
+
+[node name="title" type="Label" parent="CanvasLayer" unique_id=194415570]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -741.5
+offset_top = 102.0
+offset_right = 741.5
+offset_bottom = 199.0
+grow_horizontal = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = -10
+theme_override_constants/shadow_offset_y = 10
+theme_override_constants/outline_size = 10
+theme_override_constants/shadow_outline_size = 1
+theme_override_font_sizes/font_size = 110
+text = "CHOOSE A BOT DIFFICULTY"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Back" type="Button" parent="CanvasLayer" unique_id=229382428]
+offset_left = 1646.0
+offset_top = 897.0
+offset_right = 1791.0
+offset_bottom = 967.0
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_fonts/font = ExtResource("3_font")
+theme_override_font_sizes/font_size = 40
+theme_override_styles/normal = SubResource("StyleBoxTexture_wg653")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_assmo")
+theme_override_styles/hover = SubResource("StyleBoxTexture_7pi3i")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_ctsqj")
+text = "BACK"
+
+[node name="selects" type="Control" parent="CanvasLayer" unique_id=348120610]
+layout_mode = 3
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_left = 80.0
+offset_top = 217.0
+offset_right = 870.0
+offset_bottom = -146.0
+grow_vertical = 2
+
+[node name="easy" type="Button" parent="CanvasLayer/selects" unique_id=1034534443]
+layout_mode = 0
+offset_left = 281.0
+offset_top = 85.0
+offset_right = 728.0
+offset_bottom = 229.0
+theme_override_colors/font_color = Color(0.8627451, 0.7490196, 0.5686275, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/hover = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/focus = SubResource("StyleBoxTexture_srd6c")
+text = "EASY"
+
+[node name="normal" type="Button" parent="CanvasLayer/selects" unique_id=1815220235]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 326.0
+offset_right = 727.8667
+offset_bottom = 471.0
+theme_override_colors/font_color = Color(0.8627451, 0.7490196, 0.5686275, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/hover = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/focus = SubResource("StyleBoxTexture_srd6c")
+text = "NORMAL"
+
+[node name="hard" type="Button" parent="CanvasLayer/selects" unique_id=475490576]
+layout_mode = 0
+offset_left = 280.0
+offset_top = 549.0
+offset_right = 728.0
+offset_bottom = 694.0
+theme_override_colors/font_color = Color(0.8627451, 0.7490196, 0.5686275, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/hover = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/focus = SubResource("StyleBoxTexture_srd6c")
+text = "HARD"
+
+[node name="start" type="Button" parent="CanvasLayer/selects" unique_id=123808975]
+layout_mode = 0
+offset_left = 1019.0
+offset_top = 326.0
+offset_right = 1436.0
+offset_bottom = 471.0
+theme_override_colors/font_color = Color(0.8627451, 0.7490196, 0.5686275, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 100
+theme_override_styles/normal = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/hover = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_srd6c")
+theme_override_styles/focus = SubResource("StyleBoxTexture_srd6c")
+text = "START"
+
+[node name="info" type="Label" parent="CanvasLayer" unique_id=1898322930]
+offset_left = 951.0
+offset_top = 303.0
+offset_right = 991.0
+offset_bottom = 339.0
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 30
+
+[connection signal="pressed" from="CanvasLayer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="CanvasLayer/selects/easy" to="." method="_on_easy_pressed"]
+[connection signal="pressed" from="CanvasLayer/selects/normal" to="." method="_on_normal_pressed"]
+[connection signal="pressed" from="CanvasLayer/selects/hard" to="." method="_on_hard_pressed"]
+[connection signal="pressed" from="CanvasLayer/selects/start" to="." method="_on_start_pressed"]

@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="BattleTheme" format=3 uid="uid://cdqxhyvxq4mv6"]
+
+[ext_resource type="Script" uid="uid://cx1s8mbubkw7m" path="res://Scripts/resources/battle_theme.gd" id="1_bcwem"]
+[ext_resource type="Script" uid="uid://dwxjlf7xx3n81" path="res://Scripts/resources/battle_questions.gd" id="2_wuaut"]
+[ext_resource type="Resource" uid="uid://cngea7tkkym4e" path="res://Scripts/Resource/varied/html battle questions/easy1.tres" id="3_lgm86"]
+[ext_resource type="Resource" uid="uid://iqhudhnthryi" path="res://Scripts/Resource/varied/html battle questions/easy2.tres" id="4_5agt3"]
+[ext_resource type="Resource" uid="uid://dpl28ov2h56cc" path="res://Scripts/Resource/varied/html battle questions/easy3.tres" id="5_jyvye"]
+[ext_resource type="Resource" uid="uid://dypisfnejt52t" path="res://Scripts/Resource/varied/html battle questions/medium1.tres" id="6_nakcx"]
+[ext_resource type="Resource" uid="uid://bw722qp28tir5" path="res://Scripts/Resource/varied/html battle questions/medium2.tres" id="7_yvv0u"]
+[ext_resource type="Resource" uid="uid://b4w4xyp2di8fv" path="res://Scripts/Resource/varied/html battle questions/medium3.tres" id="8_jy0gm"]
+[ext_resource type="Resource" uid="uid://dvugsx0s5ux0p" path="res://Scripts/Resource/varied/html battle questions/hard1.tres" id="9_kw1y1"]
+[ext_resource type="Resource" uid="uid://b40jvl7is44c" path="res://Scripts/Resource/varied/html battle questions/hard2.tres" id="10_yab1a"]
+[ext_resource type="Resource" uid="uid://81n7om70wli3" path="res://Scripts/Resource/varied/html battle questions/hard3.tres" id="11_eteao"]
+
+[resource]
+script = ExtResource("1_bcwem")
+theme = Array[ExtResource("2_wuaut")]([ExtResource("3_lgm86"), ExtResource("4_5agt3"), ExtResource("5_jyvye"), ExtResource("6_nakcx"), ExtResource("7_yvv0u"), ExtResource("8_jy0gm"), ExtResource("9_kw1y1"), ExtResource("10_yab1a"), ExtResource("11_eteao")])
+metadata/_custom_type_script = "uid://cx1s8mbubkw7m"

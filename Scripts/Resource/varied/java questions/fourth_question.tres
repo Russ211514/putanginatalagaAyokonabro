@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="QuizQuestion" load_steps=2 format=3 uid="uid://d0ahrlplh45jm"]
+
+[ext_resource type="Script" uid="uid://bwi7na0gcdaoc" path="res://Scripts/resources/question.gd" id="1_cvrqs"]
+
+[resource]
+script = ExtResource("1_cvrqs")
+Question_Info = "Which Java keyword is used to prevent a method from being overridden in a subclass?"
+options = Array[String](["final.", "static.", "private.", "sealed."])
+correct = "final."
+metadata/_custom_type_script = "uid://bwi7na0gcdaoc"
