@@ -10,7 +10,7 @@ extends Control
 @onready var html_game_controller = $BattleLayout/Control
 @onready var lose: Label = $BattleLayout/Lose
 @onready var win: Label = $BattleLayout/Win
-@onready var defend_cooldown_label: = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/DefendCooldownLabel
+@onready var defend_cooldown_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/DefendCooldownLabel
 @onready var info: Label = $BattleLayout/Info
 @onready var question_info: Label = $BattleLayout/QuestionInfo
 
