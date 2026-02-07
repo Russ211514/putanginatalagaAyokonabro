@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bqff32vw5sb0j"]
 
 [ext_resource type="Script" uid="uid://dlwctfiwrp5yr" path="res://Scripts/python_difficulty_selection.gd" id="1_1jpe3"]
+[ext_resource type="PackedScene" uid="uid://dl7ijtea5htd7" path="res://Python Scenes/battle_scene.tscn" id="2_328lx"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_cy6eq"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="3_328lx"]
 [ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="4_4csr8"]
@@ -39,6 +40,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_1jpe3")
+game_scene = ExtResource("2_328lx")
 
 [node name="bg" type="Panel" parent="." unique_id=1694471820]
 layout_mode = 1

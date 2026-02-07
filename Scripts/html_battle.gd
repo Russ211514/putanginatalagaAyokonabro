@@ -11,6 +11,7 @@ extends Control
 @onready var lose: Label = $BattleLayout/Lose
 @onready var win: Label = $BattleLayout/Win
 @onready var defend_cooldown_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/DefendCooldownLabel
+@onready var player_turn_timer_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/PlayerTurnTimerLabel
 @onready var info: Label = $BattleLayout/Info
 @onready var question_info: Label = $BattleLayout/QuestionInfo
 
@@ -22,6 +23,8 @@ extends Control
 var magic_cooldown: float = 0.0
 var ultimate_cooldown: float = 0.0
 var defend_cooldown: float = 0.0
+var player_turn_time: float = 0.0
+var player_turn_max_time: float = 35.0
 
 var current_turn = "player"
 var player_defending = false
@@ -37,6 +40,8 @@ func _ready() -> void:
 		question_info.hide()
 	if info:
 		info.show()
+	if player_turn_timer_label:
+		player_turn_timer_label.hide()
 	lose.visible = false
 	win.visible = false
 	html_game_controller.visible = false
@@ -93,6 +98,15 @@ func _process(delta: float) -> void:
 				defend_button.disabled = false
 	else:
 		defend_cooldown_label.hide()
+	
+	if current_turn == "player" and player_turn_time > 0:
+		player_turn_time -= delta
+		if player_turn_timer_label:
+			player_turn_timer_label.text = "Time: %.0fs" % max(0, player_turn_time)
+		if player_turn_time <= 0:
+			player_turn_time = 0
+		if player_turn_timer_label:
+			player_turn_timer_label.hide()
 
 func _on_options_button_pressed(button: BaseButton) -> void:
 	match button.text:
@@ -202,6 +216,8 @@ func switch_turn() -> void:
 		current_turn = "enemy"
 		if info:
 			info.text = "ENEMY'S TURN"
+		if player_turn_timer_label:
+			player_turn_timer_label.hide()
 		enemy_turn()
 	else:
 		current_turn = "player"
@@ -209,6 +225,22 @@ func switch_turn() -> void:
 		_options_menu.show()
 		if info:
 			info.text = "PLAYER'S TURN"
+		
+		# Set timer based on difficulty
+		match bot_difficulty:
+			0:  # Easy - no timer
+				player_turn_max_time = 0.0
+			1:  # Normal - 35 seconds
+				player_turn_max_time = 35.0
+			2:  # Hard - 25 seconds
+				player_turn_max_time = 25.0
+			_:
+				player_turn_max_time = 35.0
+		
+		# Start player turn timer
+		player_turn_time = player_turn_max_time
+		if player_turn_timer_label and player_turn_max_time > 0:
+			player_turn_timer_label.show()
 		
 		magic_button.disabled = (magic_cooldown > 0)
 		ultimate_button.disabled = (ultimate_cooldown > 0)
