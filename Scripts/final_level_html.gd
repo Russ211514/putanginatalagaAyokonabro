@@ -7,8 +7,6 @@ extends Control
 @onready var canvas_layer: CanvasLayer = $CanvasLayer
 
 func _ready() -> void:
-	canvas_layer.visible = false
-	
 	explanation.visible = false
 	question.visible = true
 	understand.visible = true
@@ -31,7 +29,7 @@ func _on_back_pressed() -> void:
 
 
 func _on_yes_pressed() -> void:
-	canvas_layer.visible = true
+	pass
 
 func _on_no_pressed() -> void:
 	pass # Replace with function body.

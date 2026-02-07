@@ -40,7 +40,7 @@ region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
 texture = ExtResource("3_wf3ri")
 region_rect = Rect2(67.68807, 53.68726, 184.39017, 72.433304)
 
-[node name="Control" type="Control" unique_id=1592765906]
+[node name="Control2" type="Control" unique_id=1592765906]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
