@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://djm65kqlqybap"]
 
+[ext_resource type="Script" uid="uid://b06xevl6hytgp" path="res://Scripts/html_tutorial_start_lvl2.gd" id="1_cc0c1"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="1_msts1"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="2_6xy2c"]
 [ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="3_8sede"]
@@ -42,6 +43,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_cc0c1")
 
 [node name="bg" type="Panel" parent="." unique_id=1604342402]
 layout_mode = 1
@@ -222,3 +224,8 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_18i6m")
 theme_override_styles/hover = SubResource("StyleBoxTexture_18i6m")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_18i6m")
 text = "BACK"
+
+[connection signal="pressed" from="Understand" to="." method="_on_understand_pressed"]
+[connection signal="pressed" from="Next" to="." method="_on_next_pressed"]
+[connection signal="pressed" from="Explanation/X button" to="." method="_on_x_button_pressed"]
+[connection signal="pressed" from="buttons/Back" to="." method="_on_back_pressed"]
