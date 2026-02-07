@@ -68,7 +68,7 @@ func game_over() -> void:
 	else:
 		$GameOver/Score.text = str("Congrats you got ", correct_question, "/", quiz.theme.size())
 		$GameOver/Restart.hide()
-		# Unlock level 2 when player gets perfect score
+		# Unlock level 2 when player gets perfect score on html quiz part 2
 		LevelCore.lvl1_completed = true
 	$GameOver.show()
 

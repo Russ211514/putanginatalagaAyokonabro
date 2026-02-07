@@ -70,9 +70,9 @@ func game_over() -> void:
 		$GameOver/Restart.hide()
 		# Save progress - mark mini html quiz as completed
 		LevelCore.html_mini_quiz_completed = true
-		# Navigate to the next topic (html quiz part 2)
+		# Return to level selector
 		await get_tree().create_timer(2.0).timeout
-		get_tree().change_scene_to_file("res://Html Scenes/html quiz part2.tscn")
+		get_tree().change_scene_to_file("res://Html Scenes/html_level_selector.tscn")
 	$GameOver.show()
 
 func _on_back_pressed() -> void:
