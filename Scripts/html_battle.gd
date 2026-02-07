@@ -198,13 +198,15 @@ func switch_turn() -> void:
 	if current_turn == "player":
 		defend_button.disabled = (defend_cooldown > 0)
 		current_turn = "enemy"
-		info.text = "ENEMY'S TURN"
+		if info:
+			info.text = "ENEMY'S TURN"
 		enemy_turn()
 	else:
 		current_turn = "player"
 		player_defending = false
 		_options_menu.show()
-		info.text = "PLAYER'S TURN"
+		if info:
+			info.text = "PLAYER'S TURN"
 		
 		magic_button.disabled = (magic_cooldown > 0)
 		ultimate_button.disabled = (ultimate_cooldown > 0)
