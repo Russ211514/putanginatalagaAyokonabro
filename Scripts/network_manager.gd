@@ -42,7 +42,7 @@ func _initialize_backend() -> void:
 	# Check if running in WebGL (browser)
 	var is_webgl = OS.get_name() == "Web"
 	
-	if is_webgl or not Engine.get_version_info().is_official:
+	if is_webgl or not Engine.get_version_info().get("is_official", true):
 		# Use WebSocket for WebGL/Web exports
 		print("Using WebSocket backend for multiplayer")
 		use_eos = false
