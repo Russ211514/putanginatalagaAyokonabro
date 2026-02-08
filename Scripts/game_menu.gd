@@ -11,7 +11,7 @@ class_name GameMenu
 @onready var join_button = $UI/Multiplayer/VBoxContainer/Join
 @onready var find_match_button = $UI/Multiplayer/Button
 @onready var back_button = $UI/Multiplayer/Back
-@onready var MultiplayerSpawner = $MultiplayerSpawner
+@onready var multiplayer_spawner = $MultiplayerSpawner
 
 const PLAYER = preload("res://player/html_player.tscn")
 
@@ -37,7 +37,7 @@ func _ready() -> void:
 	_setup_eos_signals()
 	
 	# Set up multiplayer spawner
-	MultiplayerSpawner.spawn_function = add_player
+	multiplayer_spawner.spawn_function = add_player
 
 func _setup_button_connections() -> void:
 	"""Connect all UI button signals"""

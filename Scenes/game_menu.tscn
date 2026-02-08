@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://34psxemps58l" load_steps=17]
+[gd_scene format=3 uid="uid://34psxemps58l"]
 
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="1_4sb7q"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="2_2bm1k"]
@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dws5dgwtiwtwh" path="res://Art Assets/buttons/host_game_button.png" id="5_2oiwv"]
 [ext_resource type="Texture2D" uid="uid://b01opm63luqfi" path="res://Art Assets/buttons/join_game_button.png" id="6_dpa6g"]
 [ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="7_tkw3o"]
-[ext_resource type="Script" path="res://Scripts/game_menu.gd" id="8_game_menu"]
+[ext_resource type="Script" uid="uid://bcy4q2vgvejvb" path="res://Scripts/game_menu.gd" id="8_game_menu"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_xhjw0"]
 texture = ExtResource("3_68yqx")
