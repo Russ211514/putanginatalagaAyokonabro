@@ -19,10 +19,11 @@ var matchmaking = preload("res://Scripts/NodeTunnelMatchmaking.gd").new()
 var is_host = false
 var room_code = ""
 var waiting_for_opponent = false
-var connection_timeout = 30.0  # seconds
+var connection_timeout = 30.0
 var timeout_timer = 0.0
 var my_player_id = 0
 var opponent_player_id = 0
+var match_started = false
 
 func _ready() -> void:
 	add_child(matchmaking)
@@ -53,23 +54,16 @@ func _on_host_pressed() -> void:
 	timeout_timer = 0.0
 	my_player_id = multiplayer.get_unique_id()
 	
-	# Get custom room name if provided
-	var custom_name = room_name_input.text.strip_edges()
-	if custom_name.is_empty():
-		custom_name = "Room " + room_code.substr(0, 6)
-	
 	peer.host()
 	await peer.hosting
 	
 	online_id_label.text = "Code: " + room_code
 	online_id_label.show()
 	
-	# Disable join UI
 	join_button.disabled = true
 	oid_input.editable = false
 	room_name_input.editable = false
 	
-	# Update status
 	copy_oid_button.text = "WAITING..."
 	copy_oid_button.disabled = true
 	
@@ -86,30 +80,24 @@ func _on_host_pressed() -> void:
 			_on_peer_disconnected(pid)
 	)
 	
-	# Spawn self as host
 	$MultiplayerSpawner.spawn(my_player_id)
 
 func _on_peer_connected(pid: int) -> void:
-	"""Handle when a peer connects"""
 	print("Spawning player for peer: " + str(pid))
 	$MultiplayerSpawner.spawn(pid)
 	
-	# Wait for both players to be visible
 	await get_tree().create_timer(1.0).timeout
 	
-	if players.size() >= 2:
-		# Tell the joining player to start the battle
-		_notify_battle_start.rpc_id(pid)
+	if players.size() >= 2 and not match_started:
+		match_started = true
+		_start_pvp_match.rpc_id(pid)
 		_on_match_found()
 
 func _on_peer_disconnected(pid: int) -> void:
-	"""Handle when a peer disconnects"""
 	print("Peer disconnected: " + str(pid))
-	# Remove player from array
 	players = players.filter(func(p): return p.name != str(pid))
 
 func _on_join_pressed() -> void:
-	"""Join a game using the provided room code"""
 	var code = oid_input.text.strip_edges()
 	if code.is_empty():
 		online_id_label.text = "ERROR: Enter room code"
@@ -120,13 +108,11 @@ func _on_join_pressed() -> void:
 	timeout_timer = 0.0
 	my_player_id = multiplayer.get_unique_id()
 	
-	# Disable host UI
 	host_button.disabled = true
 	room_name_input.editable = false
 	copy_oid_button.disabled = true
 	oid_input.editable = false
 	
-	# Update status
 	join_button.text = "JOINING..."
 	join_button.disabled = true
 	
@@ -141,32 +127,25 @@ func _on_join_pressed() -> void:
 			_on_peer_disconnected(pid)
 	)
 	
-	# Wait a moment for host to be ready
 	await get_tree().create_timer(0.5).timeout
 	
-	# Spawn self as client
 	$MultiplayerSpawner.spawn(my_player_id)
 	
-	# Wait for both players to be visible
 	await get_tree().create_timer(1.5).timeout
 	
-	if players.size() >= 2:
-		# Notify the host that joining player is ready
-		_notify_battle_start.rpc_id(1)
+	if players.size() >= 2 and not match_started:
+		match_started = true
+		_start_pvp_match.rpc_id(1)
 
 @rpc("any_peer", "call_local")
-func _notify_battle_start() -> void:
-	"""RPC called when both players are ready"""
-	# Give a moment for all RPCs to settle
+func _start_pvp_match() -> void:
 	await get_tree().create_timer(0.5).timeout
 	_on_match_found()
 
 func _on_match_found() -> void:
-	"""Called when both players are ready"""
 	waiting_for_opponent = false
 	print("Match found! Starting battle with " + str(players.size()) + " players")
 	
-	# Hide multiplayer UI and start battle
 	MultiplayerUI.hide()
 	Title.hide()
 	start_battle()
