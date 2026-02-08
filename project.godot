@@ -35,6 +35,16 @@ JavaGameController="uid://d33ix37tqbja"
 BattleQuestions="*uid://dwxjlf7xx3n81"
 DataSave="*uid://3yco6520dep6"
 HtmlBattleController="*uid://b1dxjb7xuykhk"
+EOSGRuntime="*uid://7saywdx0ipep"
+HPlatform="*uid://yl2muvqrdiud"
+HAuth="*uid://786t1jiowvvg"
+HAchievements="*uid://bis404dty5u5c"
+HFriends="*uid://uumqbey8ji5t"
+HStats="*uid://dbckdip83oone"
+HLeaderboards="*uid://b06khhf20mplm"
+HLobbies="*uid://6iqvm33q0tb1"
+HP2P="*uid://u6ae5fpm6l8q"
+HSessions="*uid://bieh2rxxahuu2"
 
 [display]
 
@@ -45,7 +55,7 @@ window/stretch/mode="viewport"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/GD-Sync/plugin.cfg", "res://addons/nodetunnel/plugin.cfg")
+enabled=PackedStringArray("res://addons/GD-Sync/plugin.cfg", "res://addons/epic-online-services-godot/plugin.cfg", "res://addons/nodetunnel/plugin.cfg")
 
 [gui]
 
