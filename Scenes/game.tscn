@@ -8,10 +8,11 @@
 [ext_resource type="Texture2D" uid="uid://fh6a7umyqk0l" path="res://Art Assets/buttons/copyCode button.png" id="5_1l0tm"]
 [ext_resource type="Texture2D" uid="uid://b01opm63luqfi" path="res://Art Assets/buttons/join_game_button.png" id="5_h4fw4"]
 [ext_resource type="Theme" uid="uid://2q3vbk6bmh2r" path="res://Themes/default_theme.tres" id="6_game"]
-[ext_resource type="PackedScene" uid="uid://cjbitdt03r8sc" path="res://Scenes/health_bar.tscn" id="7_game"]
-[ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://player/html_player.tscn" id="8_game"]
+[ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://Scenes/window_default.tscn" id="7_game"]
+[ext_resource type="PackedScene" uid="uid://cjbitdt03r8sc" path="res://Scenes/health_bar.tscn" id="8_game"]
+[ext_resource type="PackedScene" uid="uid://cvj375674d1g6" path="res://player/html_player.tscn" id="9_game"]
 [ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="8_v158k"]
-[ext_resource type="Script" uid="uid://bmndv0io8k31u" path="res://Scripts/game_battle.gd" id="9_game"]
+[ext_resource type="Script" uid="uid://bmndv0io8k31u" path="res://Scripts/game_battle.gd" id="10_game"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ldgsr"]
 texture = ExtResource("1_wowpa")
@@ -291,7 +292,7 @@ text = "BACK"
 
 [node name="BattleLayout" type="CanvasLayer" parent="." unique_id=1000000001]
 visible = false
-script = ExtResource("9_game")
+script = ExtResource("10_game")
 
 [node name="Battle" type="Control" parent="BattleLayout" unique_id=1000000002]
 layout_mode = 3
