@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://04gohu2iq8vq"]
 
 [ext_resource type="Texture2D" uid="uid://cyh0kegeul5ab" path="res://Art Assets/backgrounds/background_level_selection.png" id="1_c4id0"]
-[ext_resource type="Script" uid="uid://coqebuiry2mld" path="res://Python Scenes/python_level_selector.gd" id="1_foxgp"]
+[ext_resource type="Script" uid="uid://coqebuiry2mld" path="res://Scripts/python_level_selector.gd" id="1_foxgp"]
 [ext_resource type="Texture2D" uid="uid://gfhatt7lgafe" path="res://Art Assets/buttons/blank_button_level_selection.png" id="2_foxgp"]
 [ext_resource type="Texture2D" uid="uid://ce8xn6c21jmwu" path="res://Art Assets/buttons/lock_button_level_selection.png" id="3_sqvdh"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="4_228me"]

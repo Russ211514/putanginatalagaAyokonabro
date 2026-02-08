@@ -1,7 +1,7 @@
 extends Node
 class_name EOSCredentials
 
-const PRODUCT_NAME = "Code Arena"
+const PRODUCT_NAME = "Code_Arena"
 const PRODUCT_VERSION = ""
 
 const PRODUCT_ID = "e0fbe67b3da440c0a5e9c1d9667955ff"
