@@ -4,10 +4,10 @@ class_name Game
 @onready var MultiplayerUI = $UI/Multiplayer
 @onready var Title = $RoomLabel
 
-const PLAYER = preload("res://Player/player.tscn")
+const PLAYER = preload("res://player/html_player.tscn")
 
 var peer = NodeTunnelPeer.new()
-var players : Array[Player] = []
+var players : Array[Node] = []
 var matchmaking = preload("res://Scripts/NodeTunnelMatchmaking.gd").new()
 
 func _ready() -> void:
@@ -43,7 +43,7 @@ func _on_join_pressed() -> void:
 	MultiplayerUI.hide()
 	Title.hide()
 
-func add_player(pid):
+func add_player(pid) -> Node:
 	var player = PLAYER.instantiate()
 	player.name = str(pid)
 	player.global_position = $bg.get_child(players.size()).global_position
