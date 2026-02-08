@@ -51,12 +51,16 @@ func _setup_button_connections() -> void:
 
 func _setup_network_signals() -> void:
 	"""Connect network manager signals"""
+	print("Setting up network manager signals...")
+	
 	network_manager.lobby_created.connect(_on_lobby_created)
 	network_manager.lobby_joined.connect(_on_lobby_joined)
 	network_manager.matchmaking_started.connect(_on_matchmaking_started)
 	network_manager.matchmaking_complete.connect(_on_matchmaking_complete)
 	network_manager.peer_connected.connect(_on_peer_connected)
 	network_manager.error_occurred.connect(_on_network_error)
+	
+	print("Network signals connected successfully")
 
 func _update_user_id_display() -> void:
 	"""Update the displayed user ID"""
@@ -82,24 +86,46 @@ func _on_host_pressed() -> void:
 	join_button.disabled = true
 	find_match_button.disabled = true
 	
+	# Show loading state
+	online_id_label.text = "Creating lobby..."
+	print("Network backend: " + network_manager.get_active_backend())
+	
 	# Get room name (or use default)
 	var room_name = "Game"
 	if not room_name_input.text.is_empty():
 		room_name = room_name_input.text
+	
+	print("Creating lobby with name: " + room_name)
 	
 	# Create lobby via Network Manager
 	network_manager.create_lobby(room_name, 2, false)
 	
 	waiting_for_opponent = true
 	_disable_inputs()
+	
+	# Give the signal some time to process
+	await get_tree().process_frame
 
 func _on_lobby_created(lobby_id: String, room_code: String) -> void:
 	"""Called when lobby is successfully created"""
 	print("Lobby created: " + lobby_id + " with code: " + room_code)
 	
 	current_room_code = room_code
-	online_id_label.text = "Room: " + room_code
+	
+	# Display room code prominently
+	if not room_code.is_empty():
+		online_id_label.text = "ROOM CODE:\n" + room_code
+		print("Room code displayed: " + room_code)
+	else:
+		online_id_label.text = "ERROR: No room code"
+		print("ERROR: Room code is empty!")
+	
+	# Update copy button
+	copy_oid_button.disabled = room_code.is_empty()
 	copy_oid_button.text = "COPY CODE"
+	
+	# Also set the input field to show the code
+	oid_input.text = room_code
 
 # ============================================================================
 # JOIN GAME
@@ -240,10 +266,27 @@ func add_player(pid) -> Node:
 
 func _on_copy_oid_pressed() -> void:
 	"""Copy the room code to clipboard"""
+	var code_to_copy = ""
+	
+	# If hosting, copy the generated room code
 	if is_hosting and not current_room_code.is_empty():
-		DisplayServer.clipboard_set(current_room_code)
+		code_to_copy = current_room_code
+		print("Copying host room code: " + code_to_copy)
+	# Otherwise try to copy from the input field
+	elif not oid_input.text.is_empty():
+		code_to_copy = oid_input.text.strip_edges()
+		print("Copying from input field: " + code_to_copy)
+	
+	if not code_to_copy.is_empty():
+		DisplayServer.clipboard_set(code_to_copy)
 		copy_oid_button.text = "COPIED!"
+		print("Clipboard set to: " + code_to_copy)
 		await get_tree().create_timer(2.0).timeout
+		copy_oid_button.text = "COPY CODE"
+	else:
+		print("ERROR: No room code to copy")
+		copy_oid_button.text = "NO CODE"
+		await get_tree().create_timer(1.0).timeout
 		copy_oid_button.text = "COPY CODE"
 
 func _on_back_pressed() -> void:

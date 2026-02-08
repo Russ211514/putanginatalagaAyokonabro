@@ -53,6 +53,7 @@ func notify_authentication(user_id: String) -> void:
 func create_lobby(lobby_name: String, max_players: int = 2, is_private: bool = false) -> void:
 	"""Create a new lobby"""
 	if not is_authenticated:
+		print("ERROR: Not authenticated, cannot create lobby")
 		error_occurred.emit(-1, "Not authenticated")
 		return
 	
@@ -74,8 +75,12 @@ func create_lobby(lobby_name: String, max_players: int = 2, is_private: bool = f
 		"is_private": is_private
 	}
 	
-	print("Lobby created: ID=" + lobby_id + ", Code=" + room_code)
+	print("Lobby created successfully!")
+	print("  Lobby ID: " + lobby_id)
+	print("  Room Code: " + room_code)
+	print("  Emitting lobby_created signal...")
 	lobby_created.emit(lobby_id, room_code)
+	print("  Signal emitted!")
 
 func search_lobbies(_game_mode: String = "pvp") -> void:
 	"""Search for available lobbies"""

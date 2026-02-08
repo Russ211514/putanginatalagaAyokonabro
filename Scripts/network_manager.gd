@@ -31,7 +31,7 @@ signal error_occurred(error_code: int, error_message: String)
 
 func _ready() -> void:
 	# Determine which backend to use
-	_initialize_backend()
+	await _initialize_backend()
 	
 	# Connect to active backend signals
 	_connect_backend_signals()
@@ -89,11 +89,16 @@ func _connect_backend_signals() -> void:
 	
 	# Lobby signals
 	if active_backend.has_signal("lobby_created"):
+		print("Connecting to backend lobby_created signal...")
 		active_backend.lobby_created.connect(func(lobby_id, room_code):
+			print("NetworkManager: lobby_created signal received from backend: " + lobby_id + " | Code: " + room_code)
 			current_lobby_id = lobby_id
 			is_host = true
 			lobby_created.emit(lobby_id, room_code)
 		)
+		print("Backend lobby_created signal connected!")
+	else:
+		print("WARNING: Backend does not have lobby_created signal!")
 	
 	if active_backend.has_signal("lobby_joined"):
 		active_backend.lobby_joined.connect(func(lobby_id, owner_id = ""):
