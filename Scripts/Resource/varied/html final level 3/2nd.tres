@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_x2cev")
+Question_Info = "hen writing a style declaration, which character is used to separate the property (the feature you are changing) from its value (how it looks)?"
+options = Array[String](["An equals sign (=)", "A colon (:)", "A semicolon (;)", "A hyphen (-)"])
+correct = "A colon (:)"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"

@@ -4,4 +4,7 @@
 
 [resource]
 script = ExtResource("1_m8b8k")
+Question_Info = "Which of the following examples follows the correct HTML syntax for changing the text color of a paragraph?"
+options = Array[String](["<p style=\"color=blue;\">", "<p style=\"color:blue;\">", "<p style:color=\"blue\">", "<p color=\"blue;\">"])
+correct = "<p style=\"color:blue;\">"
 metadata/_custom_type_script = "uid://bwi7na0gcdaoc"
