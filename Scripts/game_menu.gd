@@ -127,7 +127,7 @@ func _on_join_pressed() -> void:
 	find_match_button.disabled = true
 	_disable_inputs()
 
-func _on_lobby_joined(lobby_id: String, owner_id: String = "") -> void:
+func _on_lobby_joined(lobby_id: String, _owner_id: String = "") -> void:
 	"""Called when successfully joined a lobby"""
 	print("Lobby joined: " + lobby_id)
 	
@@ -264,7 +264,7 @@ func _reset_ui() -> void:
 	oid_input.editable = true
 	_update_user_id_display()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	"""Handle any per-frame logic"""
 	# Keep connection alive - check if opponent joined
 	if waiting_for_opponent and is_hosting:
@@ -272,8 +272,8 @@ func _process(delta: float) -> void:
 		if lobby_info.has("players"):
 			if lobby_info.players >= 2:
 			# Second player joined
-			waiting_for_opponent = false
-			start_pvp_match()
+				waiting_for_opponent = false
+				start_pvp_match()
 
 func _exit_tree() -> void:
 	"""Clean up network resources when scene unloads"""

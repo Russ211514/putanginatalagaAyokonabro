@@ -329,7 +329,7 @@ func enemy_turn() -> void:
 	if not check_victory():
 		switch_turn()
 
-func _enemy_answer_correct(difficulty: int, action: String) -> bool:
+func _enemy_answer_correct(difficulty: int, _action: String) -> bool:
 	# Based on difficulty, determine if enemy answers correctly
 	# 0 = easy (often wrong), 1 = normal (occasionally wrong), 2 = hard (never wrong)
 	match difficulty:

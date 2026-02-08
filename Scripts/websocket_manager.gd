@@ -4,7 +4,7 @@ class_name WebSocketManager
 # WebSocket client for multiplayer
 var websocket_client: WebSocketPeer
 var websocket_url: String = "ws://localhost:8080"
-var is_connected: bool = false
+var ws_connected: bool = false
 var reconnect_attempts: int = 0
 var max_reconnect_attempts: int = 5
 var reconnect_delay: float = 2.0
@@ -53,10 +53,10 @@ func disconnect_from_server() -> void:
 	"""Disconnect from the WebSocket server"""
 	if websocket_client and websocket_client.get_ready_state() != WebSocketPeer.STATE_CLOSED:
 		websocket_client.close()
-		is_connected = false
+		ws_connected = false
 		disconnected.emit()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	"""Handle WebSocket messages"""
 	if not websocket_client:
 		return
@@ -66,8 +66,8 @@ func _process(delta: float) -> void:
 	
 	match state:
 		WebSocketPeer.STATE_OPEN:
-			if not is_connected:
-				is_connected = true
+			if not ws_connected:
+				ws_connected = true
 				reconnect_attempts = 0
 				connected.emit()
 				print("Connected to WebSocket server")
@@ -82,14 +82,14 @@ func _process(delta: float) -> void:
 			pass
 		
 		WebSocketPeer.STATE_CLOSED:
-			if is_connected:
-				is_connected = false
+			if ws_connected:
+				ws_connected = false
 				disconnected.emit()
 				_attempt_reconnect()
 
 func _send_message(message_type: String, data: Dictionary = {}) -> void:
 	"""Send a message to the server"""
-	if not is_connected:
+	if not ws_connected:
 		push_error("Not connected to WebSocket server")
 		return
 	

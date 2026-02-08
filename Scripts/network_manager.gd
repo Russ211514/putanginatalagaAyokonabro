@@ -52,8 +52,10 @@ func _initialize_backend() -> void:
 		
 		# For testing, use localhost
 		var ws_url = "ws://localhost:8080"
-		if "WS_SERVER_URL" in OS.get_environment():
-			ws_url = OS.get_environment()["WS_SERVER_URL"]
+		# Check environment variable for WebSocket URL
+		var ws_env = OS.get_environment("WS_SERVER_URL")
+		if not ws_env.is_empty():
+			ws_url = ws_env
 		
 		websocket_manager.connect_to_server(ws_url)
 	else:
@@ -135,7 +137,7 @@ func _connect_backend_signals() -> void:
 		)
 	
 	if active_backend.has_signal("p2p_message_received"):
-		active_backend.p2p_message_received.connect(func(peer_id, data):
+		active_backend.p2p_message_received.connect(func(_peer_id, data):
 			message_received.emit(data)
 		)
 	
@@ -268,7 +270,7 @@ func is_authenticated() -> bool:
 	if use_eos and eos_manager:
 		return eos_manager.is_authenticated
 	elif websocket_manager:
-		return websocket_manager.is_connected
+		return websocket_manager.ws_connected
 	return false
 
 func get_current_lobby_info() -> Dictionary:
