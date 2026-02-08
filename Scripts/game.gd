@@ -193,6 +193,13 @@ func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/pvp language selection.tscn")
 
 func start_battle() -> void:
-	"""Start the PvP battle when both players are ready"""
 	if BattleSystem and players.size() >= 2:
-		BattleSystem.start_battle()
+		if my_player_id == 0:
+			my_player_id = multiplayer.get_unique_id()
+		
+		for p in multiplayer.get_peers():
+			if p != my_player_id:
+				opponent_player_id = p
+				break
+		
+		BattleSystem.start_pvp_battle(my_player_id, opponent_player_id)
