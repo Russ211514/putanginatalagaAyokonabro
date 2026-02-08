@@ -1,418 +1,507 @@
 extends Node
 class_name EOSManager
 
-# Load EOS credentials from config
-var config = preload("res://Scripts/eos_config.gd").new()
-
-# EOS Configuration - Will be loaded from EOSConfig
-var CLIENT_ID = ""
-var CLIENT_SECRET = ""
-var DEPLOYMENT_ID = ""
-var PRODUCT_ID = ""
-var SANDBOX_ID = ""
-
-# Session and state
-var account_id: String = ""
-var user_id: String = ""
-var is_authenticated = false
+# State
+var local_user_id: String = ""
+var user_account_id: String = ""
+var is_authenticated: bool = false
 var current_lobby_id: String = ""
-var is_lobby_owner = false
-var matchmaking_in_progress = false
+var is_lobby_owner: bool = false
+var matchmaking_in_progress: bool = false
 
-# Signals
-signal authenticated
-signal authentication_failed(error: String)
-signal lobby_created(lobby_id: String)
-signal lobby_joined(lobby_id: String)
-signal lobby_search_complete(lobbies: Array)
-signal matchmaking_started
-signal matchmaking_complete(session_id: String)
-signal peer_connected(peer_id: String)
-signal peer_disconnected(peer_id: String)
-signal error_occurred(error_code: int, error_message: String)
-
-# Lobby and matchmaking data
+# Lobbies cache
 var lobbies_found: Array = []
 var active_lobbies: Dictionary = {}
-var matchmaking_session: Dictionary = {}
+var current_lobby_data: Dictionary = {}
+
+# P2P Sessions
 var p2p_sessions: Dictionary = {}
+var p2p_socket_id: int = 0  # Socket ID for P2P communication
+
+# Signals
+signal authenticated(user_id: String)
+signal authentication_failed(error: String)
+signal lobby_created(lobby_id: String, room_code: String)
+signal lobby_joined(lobby_id: String, owner_id: String)
+signal lobby_search_complete(lobbies: Array)
+signal lobby_member_updated(lobby_id: String, member_count: int)
+signal matchmaking_started
+signal matchmaking_complete(opponent_id: String)
+signal peer_connected(peer_id: String)
+signal peer_disconnected(peer_id: String)
+signal p2p_message_received(peer_id: String, data: Dictionary)
+signal error_occurred(error_code: int, error_message: String)
 
 func _ready() -> void:
-	# Load credentials from config
-	var creds = config.get_credentials()
-	CLIENT_ID = creds.client_id
-	CLIENT_SECRET = creds.client_secret
-	DEPLOYMENT_ID = creds.deployment_id
-	PRODUCT_ID = creds.product_id
-	SANDBOX_ID = creds.sandbox_id
+	# Connect to EOS signals
+	IEOS.auth_interface_login_callback.connect(_on_auth_login)
+	IEOS.auth_interface_logout_callback.connect(_on_auth_logout)
+	IEOS.lobbies_interface_update_received_callback.connect(_on_lobby_update)
+	IEOS.lobbies_interface_join_lobby_callback.connect(_on_join_lobby)
+	IEOS.lobbies_interface_create_lobby_callback.connect(_on_create_lobby)
+	IEOS.lobbies_interface_find_lobbies_callback.connect(_on_find_lobbies)
+	IEOS.lobbies_interface_leave_lobby_callback.connect(_on_leave_lobby)
+	IEOS.p2p_interface_on_peer_connection_request_callback.connect(_on_peer_connection_request)
+	IEOS.p2p_interface_on_peer_connection_closed_callback.connect(_on_peer_connection_closed)
 	
-	# Initialize EOS SDK
-	if not _validate_credentials():
-		push_error("EOS credentials not configured")
-		authentication_failed.emit("Missing EOS credentials. Please configure EOSConfig.gd with your credentials")
+	set_process(true)
+
+# ============================================================================
+# AUTHENTICATION
+# ============================================================================
+
+func login_with_eos() -> void:
+	"""Login with EOS using stored credentials"""
+	print("Attempting EOS login...")
+	
+	# Check if already logged in
+	if is_authenticated:
+		print("Already authenticated")
+		authenticated.emit(local_user_id)
 		return
 	
-	# Start EOS initialization
-	await _init_eos()
+	# The actual login is handled in login.gd
+	# This manager will receive the callback when login completes
 
-func _validate_credentials() -> bool:
-	"""Validate that all required EOS credentials are configured"""
-	return (not CLIENT_ID.is_empty() and 
-			not CLIENT_SECRET.is_empty() and 
-			not DEPLOYMENT_ID.is_empty() and
-			not PRODUCT_ID.is_empty() and
-			not SANDBOX_ID.is_empty())
-
-func _init_eos() -> void:
-	"""Initialize EOS SDK and authenticate with device credentials"""
-	print("Initializing EOS SDK...")
+func _on_auth_login(data: Dictionary) -> void:
+	"""Called when EOS authentication completes"""
+	if not data.success:
+		print("EOS Login failed: ", data)
+		authentication_failed.emit("Login failed")
+		return
 	
-	# In development/testing, use device authentication
-	# For production, use your preferred authentication method
-	await authenticate_device()
-
-func authenticate_device() -> void:
-	"""Authenticate using device credentials (development/testing)"""
-	print("Authenticating with EOS using device credentials...")
+	local_user_id = data.local_user_id
+	print("Authenticated with local_user_id: " + str(local_user_id))
+	is_authenticated = true
 	
-	try:
-		# Device authentication is typically done through EOS backend
-		# This is a placeholder for the actual EOS authentication flow
-		is_authenticated = true
-		account_id = randi_range(100000, 999999) as String
-		user_id = "eos_user_" + account_id
-		
-		print("Authenticated as: " + user_id)
-		authenticated.emit()
-		
-	except:
-		var error = "Failed to authenticate with EOS"
-		push_error(error)
-		authentication_failed.emit(error)
+	# Get user info
+	_get_user_info()
+	authenticated.emit(local_user_id)
 
-func authenticate_user(username: String, password: String) -> void:
-	"""Authenticate with username and password"""
-	print("Authenticating user: " + username)
+func _get_user_info() -> void:
+	"""Get user information from EOS"""
+	if local_user_id.is_empty():
+		return
 	
-	# Call EOS authentication endpoint
-	# var response = await _eos_api_call("/auth/login", {"username": username, "password": password})
-	# if response.success:
-	#     is_authenticated = true
-	#     user_id = response.user_id
-	#     authenticated.emit()
-	# else:
-	#     authentication_failed.emit(response.error)
+	var opts = EOS.UserInfo.CopyUserInfoOptions.new()
+	opts.local_user_id = local_user_id
+	opts.target_user_id = local_user_id
+	
+	var user_info = EOS.UserInfo.get_user_info_interface().copy_user_info(opts)
+	if user_info:
+		print("User: " + user_info.display_name)
+		user_account_id = user_info.user_id
+
+func _on_auth_logout(data: Dictionary) -> void:
+	"""Called when logged out"""
+	print("Logged out from EOS")
+	is_authenticated = false
 
 # ============================================================================
 # LOBBY MANAGEMENT
 # ============================================================================
 
-func create_lobby(lobby_name: String, max_players: int = 2, is_private: bool = false) -> String:
-	"""Create a new lobby for hosting a game"""
+func create_lobby(lobby_name: String, max_players: int = 2, is_private: bool = false) -> void:
+	"""Create a new lobby using EOS Lobbies API"""
+	if not is_authenticated or local_user_id.is_empty():
+		push_error("Not authenticated. Cannot create lobby.")
+		error_occurred.emit(-1, "Not authenticated")
+		return
+	
 	print("Creating lobby: " + lobby_name)
 	
-	if not is_authenticated:
-		push_error("Not authenticated. Cannot create lobby.")
-		return ""
+	var create_opts = EOS.Lobbies.CreateLobbyOptions.new()
+	create_opts.local_user_id = local_user_id
+	create_opts.max_members = max_players
+	create_opts.permission_level = EOS.Lobbies.LobbyPermissionLevel.Publicaudible if not is_private else EOS.Lobbies.LobbyPermissionLevel.Inviteonly
+	create_opts.presence_enabled = true
+	create_opts.bucket_id = "pvp_match"
 	
-	var lobby_data = {
-		"name": lobby_name,
-		"owner_id": user_id,
-		"max_players": max_players,
-		"current_players": 1,
-		"is_private": is_private,
-		"created_at": Time.get_ticks_msec(),
-		"game_mode": "pvp",
-		"room_code": _generate_room_code(),
-		"status": "waiting"
-	}
+	var lobby_data_map = EOS.Lobbies.AttributeDataMap.new()
+	lobby_data_map.insert("name", lobby_name)
+	lobby_data_map.insert("gamemode", "pvp")
+	create_opts.lobby_data = lobby_data_map
 	
-	# Store lobby locally (in production, this would be stored on EOS backend)
-	var lobby_id = "lobby_" + account_id + "_" + str(Time.get_ticks_msec())
-	active_lobbies[lobby_id] = lobby_data
+	EOS.Lobbies.LobbiesInterface.create_lobby(create_opts)
+
+func _on_create_lobby(data: Dictionary) -> void:
+	"""Called when lobby creation completes"""
+	if not EOS.is_success(data.result_code):
+		print("Failed to create lobby: " + EOS.result_str(data.result_code))
+		error_occurred.emit(data.result_code, "Failed to create lobby")
+		return
+	
+	var lobby_id = data.lobby_id
+	local_user_id = data.local_user_id
 	current_lobby_id = lobby_id
 	is_lobby_owner = true
 	
-	print("Lobby created with ID: " + lobby_id)
-	print("Room code: " + lobby_data.room_code)
+	print("Lobby created successfully: " + lobby_id)
 	
-	lobby_created.emit(lobby_id)
-	return lobby_id
+	# Generate room code
+	var room_code = _generate_room_code()
+	
+	# Store lobby info
+	current_lobby_data = {
+		"id": lobby_id,
+		"name": "Game Lobby",
+		"room_code": room_code,
+		"max_members": 2,
+		"members": 1,
+		"owner": local_user_id
+	}
+	
+	lobby_created.emit(lobby_id, room_code)
 
-func search_lobbies(search_filter: Dictionary = {}) -> void:
-	"""Search for available lobbies to join"""
-	print("Searching for lobbies...")
-	
+func search_lobbies(game_mode: String = "pvp") -> void:
+	"""Search for available lobbies"""
 	if not is_authenticated:
 		push_error("Not authenticated. Cannot search lobbies.")
 		return
 	
-	# In production, this would query EOS Lobbies API
-	# For now, we'll search our local lobby list
+	print("Searching for lobbies...")
+	
+	var search_opts = EOS.Lobbies.FindLobbiesOptions.new()
+	search_opts.local_user_id = local_user_id
+	search_opts.max_results = 10
+	
+	# Add search criteria
+	var search_criteria = EOS.Lobbies.LobbySearchFilter.new()
+	search_criteria.comparison = EOS.Lobbies.ComparisonOp.Equal
+	search_criteria.attribute.key = "gamemode"
+	search_criteria.attribute.asString = game_mode
+	
+	var params = EOS.Lobbies.LobbySearchParameters.new()
+	params.filters = [search_criteria]
+	search_opts.search_parameters = params
+	
+	EOS.Lobbies.LobbiesInterface.find_lobbies(search_opts)
+
+func _on_find_lobbies(data: Dictionary) -> void:
+	"""Called when lobby search completes"""
+	if not EOS.is_success(data.result_code):
+		print("Failed to search lobbies: " + EOS.result_str(data.result_code))
+		lobbies_found.clear()
+		lobby_search_complete.emit([])
+		return
+	
+	var search_handle = data.search_result_handle
 	lobbies_found.clear()
 	
-	for lobby_id: String in active_lobbies:
-		var lobby = active_lobbies[lobby_id]
-		
-		# Apply filters
-		if "game_mode" in search_filter and lobby.game_mode != search_filter["game_mode"]:
-			continue
-		if "status" in search_filter and lobby.status != search_filter["status"]:
-			continue
-		if lobby.current_players >= lobby.max_players:
-			continue
-		
-		lobbies_found.append({
-			"id": lobby_id,
-			"name": lobby.name,
-			"owner": lobby.owner_id,
-			"players": str(lobby.current_players) + "/" + str(lobby.max_players),
-			"room_code": lobby.room_code
-		})
+	if not search_handle:
+		print("No lobbies found")
+		lobby_search_complete.emit([])
+		return
 	
-	print("Found " + str(lobbies_found.size()) + " lobbies")
+	var count_opts = EOS.Lobbies.GetSearchResultCountOptions.new()
+	count_opts.search_handle = search_handle
+	var lobby_count = EOS.Lobbies.LobbiesInterface.get_search_result_count(count_opts)
+	
+	print("Found %d lobbies" % lobby_count)
+	
+	for i in range(lobby_count):
+		var details_opts = EOS.Lobbies.CopyLobbyDetailsHandleOptions.new()
+		details_opts.search_handle = search_handle
+		details_opts.lobby_index = i
+		
+		var lobby_details = EOS.Lobbies.LobbiesInterface.copy_lobby_details_handle(details_opts)
+		if not lobby_details:
+			continue
+		
+		var lobby_info = _extract_lobby_info(lobby_details)
+		if lobby_info:
+			lobbies_found.append(lobby_info)
+	
 	lobby_search_complete.emit(lobbies_found)
 
-func join_lobby_by_code(room_code: String) -> bool:
-	"""Join a lobby using its room code"""
-	print("Attempting to join lobby with code: " + room_code)
-	
+func join_lobby_by_id(lobby_id: String) -> void:
+	"""Join a specific lobby"""
 	if not is_authenticated:
-		push_error("Not authenticated. Cannot join lobby.")
-		return false
+		push_error("Not authenticated")
+		return
 	
-	# Find lobby by room code
-	var target_lobby_id = ""
-	for lobby_id: String in active_lobbies:
-		if active_lobbies[lobby_id].room_code == room_code:
-			target_lobby_id = lobby_id
-			break
+	print("Joining lobby: " + lobby_id)
 	
-	if target_lobby_id.is_empty():
-		var error = "Lobby not found with code: " + room_code
-		push_error(error)
-		return false
+	var join_opts = EOS.Lobbies.JoinLobbyOptions.new()
+	join_opts.local_user_id = local_user_id
+	join_opts.lobby_id = lobby_id
+	join_opts.presence_enabled = true
 	
-	# Check if lobby is full
-	var lobby = active_lobbies[target_lobby_id]
-	if lobby.current_players >= lobby.max_players:
-		push_error("Lobby is full")
-		return false
-	
-	# Join the lobby
-	current_lobby_id = target_lobby_id
-	lobby.current_players += 1
-	is_lobby_owner = false
-	
-	print("Successfully joined lobby: " + target_lobby_id)
-	lobby_joined.emit(target_lobby_id)
-	
-	return true
+	EOS.Lobbies.LobbiesInterface.join_lobby(join_opts)
 
-func join_lobby_by_id(lobby_id: String) -> bool:
-	"""Join a lobby by its ID"""
-	print("Attempting to join lobby: " + lobby_id)
+func _on_join_lobby(data: Dictionary) -> void:
+	"""Called when joining a lobby completes"""
+	if not EOS.is_success(data.result_code):
+		print("Failed to join lobby: " + EOS.result_str(data.result_code))
+		error_occurred.emit(data.result_code, "Failed to join lobby")
+		return
 	
-	if not is_authenticated:
-		push_error("Not authenticated. Cannot join lobby.")
-		return false
-	
-	if not lobby_id in active_lobbies:
-		push_error("Lobby not found: " + lobby_id)
-		return false
-	
-	var lobby = active_lobbies[lobby_id]
-	if lobby.current_players >= lobby.max_players:
-		push_error("Lobby is full")
-		return false
-	
+	var lobby_id = data.lobby_id
 	current_lobby_id = lobby_id
-	lobby.current_players += 1
 	is_lobby_owner = false
 	
-	lobby_joined.emit(lobby_id)
-	return true
+	print("Successfully joined lobby: " + lobby_id)
+	
+	# Get owner info
+	var owner_id = data.lobby_owner
+	
+	lobby_joined.emit(lobby_id, owner_id)
+	
+	# Initialize P2P with owner
+	if not owner_id.is_empty():
+		_initiate_p2p_connection(owner_id)
 
 func leave_lobby() -> void:
 	"""Leave the current lobby"""
 	if current_lobby_id.is_empty():
 		return
 	
-	if current_lobby_id in active_lobbies:
-		var lobby = active_lobbies[current_lobby_id]
-		lobby.current_players = max(0, lobby.current_players - 1)
-		
-		# If owner left and no players, remove lobby
-		if is_lobby_owner and lobby.current_players == 0:
-			active_lobbies.erase(current_lobby_id)
+	print("Leaving lobby: " + current_lobby_id)
 	
+	var leave_opts = EOS.Lobbies.LeaveLobbyOptions.new()
+	leave_opts.local_user_id = local_user_id
+	leave_opts.lobby_id = current_lobby_id
+	
+	EOS.Lobbies.LobbiesInterface.leave_lobby(leave_opts)
+
+func _on_leave_lobby(data: Dictionary) -> void:
+	"""Called when leaving a lobby"""
+	print("Left lobby")
 	current_lobby_id = ""
 	is_lobby_owner = false
-	print("Left lobby")
 
-# ============================================================================
-# MATCHMAKING
-# ============================================================================
-
-func start_matchmaking(game_mode: String = "pvp") -> void:
-	"""Start searching for opponents via matchmaking"""
-	print("Starting matchmaking for game mode: " + game_mode)
+func _on_lobby_update(data: Dictionary) -> void:
+	"""Called when lobby is updated"""
+	var lobby_id = data.lobby_id
+	print("Lobby updated: " + lobby_id)
 	
-	if not is_authenticated:
-		push_error("Not authenticated. Cannot start matchmaking.")
-		return
+	# Get updated member count
+	var details_opts = EOS.Lobbies.CopyLobbyDetailsHandleOptions.new()
+	details_opts.lobby_id = lobby_id
+	details_opts.local_user_id = local_user_id
 	
-	matchmaking_in_progress = true
-	matchmaking_started.emit()
-	
-	# Simulate matchmaking (in production, this would connect to EOS Matchmaking)
-	await get_tree().create_timer(2.0).timeout
-	
-	# For standalone/testing, create an instant match
-	var session_id = _generate_session_id()
-	matchmaking_session = {
-		"session_id": session_id,
-		"game_mode": game_mode,
-		"players": [user_id],
-		"status": "matched"
-	}
-	
-	matchmaking_in_progress = false
-	matchmaking_complete.emit(session_id)
-	print("Matchmaking complete! Session ID: " + session_id)
-
-func cancel_matchmaking() -> void:
-	"""Cancel active matchmaking"""
-	if matchmaking_in_progress:
-		matchmaking_in_progress = false
-		print("Matchmaking cancelled")
+	var lobby_details = EOS.Lobbies.LobbiesInterface.copy_lobby_details_handle(details_opts)
+	if lobby_details:
+		var member_count_opts = EOS.Lobbies.GetMemberCountOptions.new()
+		member_count_opts.lobby_details_handle = lobby_details
+		var member_count = EOS.Lobbies.LobbiesInterface.get_member_count(member_count_opts)
+		lobby_member_updated.emit(lobby_id, member_count)
 
 # ============================================================================
 # P2P NETWORKING
 # ============================================================================
 
-func start_p2p_session(peer_user_id: String) -> void:
-	"""Initialize P2P session with another player"""
-	print("Starting P2P session with peer: " + peer_user_id)
-	
-	if not is_authenticated:
-		push_error("Not authenticated. Cannot start P2P session.")
+func _initiate_p2p_connection(peer_user_id: String) -> void:
+	"""Send a P2P connection request"""
+	if peer_user_id.is_empty():
 		return
 	
-	# In production, this would use EOS P2P API for NAT traversal
-	# For now, we create a session locally
-	var session_key = _generate_session_key(user_id, peer_user_id)
-	p2p_sessions[session_key] = {
-		"peer_id": peer_user_id,
-		"status": "active",
-		"created_at": Time.get_ticks_msec(),
-		"latency_ms": randi_range(10, 100)
-	}
+	print("Initiating P2P connection with: " + peer_user_id)
 	
-	peer_connected.emit(peer_user_id)
-	print("P2P session established with latency: " + str(p2p_sessions[session_key].latency_ms) + "ms")
+	# EOS P2P connection is established automatically when sending data
+	# Just store the peer ID
+	var connection_key = _get_connection_key(local_user_id, peer_user_id)
+	p2p_sessions[connection_key] = {
+		"peer_id": peer_user_id,
+		"status": "initiating",
+		"created_at": Time.get_ticks_msec()
+	}
 
 func send_p2p_message(peer_user_id: String, message: Dictionary) -> bool:
-	"""Send a message through P2P to another player"""
-	var session_key = _generate_session_key(user_id, peer_user_id)
-	
-	if not session_key in p2p_sessions:
-		push_error("No P2P session with peer: " + peer_user_id)
+	"""Send a message via P2P to another player"""
+	if local_user_id.is_empty() or peer_user_id.is_empty():
 		return false
 	
-	# In production, this would send through EOS P2P API
-	print("Sending P2P message to " + peer_user_id + ": " + str(message))
-	return true
-
-func close_p2p_session(peer_user_id: String) -> void:
-	"""Close P2P session with a peer"""
-	var session_key = _generate_session_key(user_id, peer_user_id)
+	var message_json = JSON.stringify(message)
+	var message_bytes = message_json.to_utf8_buffer()
 	
-	if session_key in p2p_sessions:
-		p2p_sessions.erase(session_key)
-		peer_disconnected.emit(peer_user_id)
-		print("P2P session closed with: " + peer_user_id)
+	var send_opts = EOS.P2P.SendPacketOptions.new()
+	send_opts.local_user_id = local_user_id
+	send_opts.remote_user_id = peer_user_id
+	send_opts.socket_id = p2p_socket_id
+	send_opts.channel = 0
+	send_opts.data = message_bytes
+	send_opts.reliable = true  # Use UDP with reliability
+	
+	var result = EOS.P2P.P2PInterface.send_packet(send_opts)
+	return EOS.is_success(result)
+
+func _on_peer_connection_request(data: Dictionary) -> void:
+	"""Called when receiving a P2P connection request"""
+	var remote_user_id = data.remote_user_id
+	print("P2P connection request from: " + remote_user_id)
+	
+	# Accept the connection
+	var accept_opts = EOS.P2P.AcceptConnectionOptions.new()
+	accept_opts.local_user_id = local_user_id
+	accept_opts.remote_user_id = remote_user_id
+	accept_opts.socket_id = p2p_socket_id
+	
+	EOS.P2P.P2PInterface.accept_connection(accept_opts)
+	
+	var connection_key = _get_connection_key(local_user_id, remote_user_id)
+	p2p_sessions[connection_key] = {
+		"peer_id": remote_user_id,
+		"status": "connected",
+		"created_at": Time.get_ticks_msec()
+	}
+	
+	peer_connected.emit(remote_user_id)
+
+func _on_peer_connection_closed(data: Dictionary) -> void:
+	"""Called when a P2P connection closes"""
+	var remote_user_id = data.remote_user_id
+	print("P2P connection closed: " + remote_user_id)
+	
+	var connection_key = _get_connection_key(local_user_id, remote_user_id)
+	if connection_key in p2p_sessions:
+		p2p_sessions.erase(connection_key)
+	
+	peer_disconnected.emit(remote_user_id)
+
+# ============================================================================
+# PROCESSING
+# ============================================================================
+
+func _process(delta: float) -> void:
+	"""Handle P2P messages"""
+	if local_user_id.is_empty():
+		return
+	
+	# Receive P2P packets
+	var receive_opts = EOS.P2P.ReceivePacketOptions.new()
+	receive_opts.local_user_id = local_user_id
+	receive_opts.max_data_size = 4096
+	receive_opts.socket_id = p2p_socket_id
+	
+	var packet_data = EOS.P2P.P2PInterface.receive_packet(receive_opts)
+	if packet_data:
+		var peer_id = packet_data.remote_user_id
+		var data_bytes = packet_data.data
+		var data_string = data_bytes.get_string_from_utf8()
+		
+		try:
+			var message = JSON.parse_string(data_string)
+			if message:
+				p2p_message_received.emit(peer_id, message)
+		except:
+			print("Failed to parse P2P message")
+
+# ============================================================================
+# MATCHMAKING (Optional - using Lobbies as foundation)
+# ============================================================================
+
+func start_matchmaking(game_mode: String = "pvp") -> void:
+	"""Start matchmaking by searching for lobbies"""
+	print("Starting matchmaking...")
+	matchmaking_in_progress = true
+	matchmaking_started.emit()
+	
+	# Search for lobbies with available slots
+	search_lobbies(game_mode)
+	
+	# If no lobbies found, create one
+	await get_tree().create_timer(1.0).timeout
+	if lobbies_found.is_empty():
+		create_lobby("Auto Match", 2, false)
+	else:
+		# Join the first available lobby
+		var selected_lobby = lobbies_found[0]
+		join_lobby_by_id(selected_lobby.id)
+	
+	matchmaking_in_progress = false
+
+func cancel_matchmaking() -> void:
+	"""Cancel active matchmaking"""
+	matchmaking_in_progress = false
 
 # ============================================================================
 # UTILITY FUNCTIONS
 # ============================================================================
 
+func _extract_lobby_info(lobby_details) -> Dictionary:
+	"""Extract lobby information from EOS handle"""
+	if not lobby_details:
+		return {}
+	
+	var lobby_info_opts = EOS.Lobbies.LobbyDetailsGetLobbyIdOptions.new()
+	lobby_info_opts.lobby_details_handle = lobby_details
+	var lobby_id = EOS.Lobbies.LobbiesInterface.lobby_details_get_lobby_id(lobby_info_opts)
+	
+	var member_count_opts = EOS.Lobbies.GetMemberCountOptions.new()
+	member_count_opts.lobby_details_handle = lobby_details
+	var member_count = EOS.Lobbies.LobbiesInterface.get_member_count(member_count_opts)
+	
+	var max_members_opts = EOS.Lobbies.GetMaxMembersOptions.new()
+	max_members_opts.lobby_details_handle = lobby_details
+	var max_members = EOS.Lobbies.LobbiesInterface.get_max_members(max_members_opts)
+	
+	var owner_id_opts = EOS.Lobbies.GetLobbyOwnerOptions.new()
+	owner_id_opts.lobby_details_handle = lobby_details
+	var owner_id = EOS.Lobbies.LobbiesInterface.get_lobby_owner(owner_id_opts)
+	
+	return {
+		"id": lobby_id,
+		"members": member_count,
+		"max_members": max_members,
+		"owner": owner_id,
+		"players": str(member_count) + "/" + str(max_members)
+	}
+
 func _generate_room_code() -> String:
-	"""Generate a unique room code for the lobby"""
+	"""Generate a unique 6-character room code"""
 	var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	var code = ""
 	for i in range(6):
 		code += chars[randi() % chars.length()]
 	return code
 
-func _generate_session_id() -> String:
-	"""Generate a unique session ID"""
-	return "session_" + str(Time.get_ticks_msec()) + "_" + str(randi())
-
-func _generate_session_key(user1: String, user2: String) -> String:
-	"""Generate a consistent session key for two users"""
+func _get_connection_key(user1: String, user2: String) -> String:
+	"""Generate a consistent key for a P2P connection"""
 	var users = [user1, user2]
 	users.sort()
 	return users[0] + "_" + users[1]
 
+# ============================================================================
+# ACCESSORS
+# ============================================================================
+
+func get_local_user_id() -> String:
+	"""Get the current user's EOS user ID"""
+	return local_user_id
+
+func get_current_lobby_id() -> String:
+	"""Get the current lobby ID"""
+	return current_lobby_id
+
+func is_lobby_host() -> bool:
+	"""Check if current user is the lobby host"""
+	return is_lobby_owner
+
 func get_current_lobby_info() -> Dictionary:
 	"""Get information about the current lobby"""
-	if current_lobby_id.is_empty() or not current_lobby_id in active_lobbies:
-		return {}
-	
-	var lobby = active_lobbies[current_lobby_id]
-	return {
-		"id": current_lobby_id,
-		"name": lobby.name,
-		"room_code": lobby.room_code,
-		"owner": lobby.owner_id,
-		"players": lobby.current_players,
-		"max_players": lobby.max_players,
-		"is_owner": is_lobby_owner
-	}
+	return current_lobby_data
 
-func get_user_id() -> String:
-	"""Get the current user's EOS user ID"""
-	return user_id
-
-func get_account_id() -> String:
-	"""Get the current user's EOS account ID"""
-	return account_id
+func get_all_lobbies() -> Array:
+	"""Get all searched lobbies"""
+	return lobbies_found
 
 func is_authenticated_user() -> bool:
 	"""Check if user is authenticated"""
 	return is_authenticated
 
-func get_all_lobbies() -> Array:
-	"""Get all active lobbies"""
-	return lobbies_found
-
-# ============================================================================
-# API HELPER (for production EOS integration)
-# ============================================================================
-
-func _eos_api_call(endpoint: String, data: Dictionary = {}) -> Dictionary:
-	"""Helper function for EOS API calls (placeholder for production)"""
-	# In production, implement actual HTTP calls to EOS backend
-	# using HTTPRequest or similar
-	
-	# Example structure:
-	# var http = HTTPRequest.new()
-	# var headers = ["Authorization: Bearer " + access_token]
-	# var response = await http.request(eos_url + endpoint, headers, HTTPClient.METHOD_POST, JSON.stringify(data))
-	
-	return {"success": true, "data": {}}
-
 func shutdown() -> void:
 	"""Clean up EOS resources"""
 	print("Shutting down EOS Manager")
-	
-	# Close all P2P sessions
-	for session_key in p2p_sessions:
-		var session = p2p_sessions[session_key]
-		close_p2p_session(session.peer_id)
-	
-	# Leave current lobby
 	leave_lobby()
+	
+	# Close all P2P connections
+	for key in p2p_sessions:
+		var session = p2p_sessions[key]
+		var close_opts = EOS.P2P.CloseConnectionOptions.new()
+		close_opts.local_user_id = local_user_id
+		close_opts.remote_user_id = session.peer_id
+		close_opts.socket_id = p2p_socket_id
+		EOS.P2P.P2PInterface.close_connection(close_opts)
 	
 	is_authenticated = false

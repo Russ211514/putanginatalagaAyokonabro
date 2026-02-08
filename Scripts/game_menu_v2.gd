@@ -23,7 +23,7 @@ var current_room_code = ""
 var opponent_user_id = ""
 
 func _ready() -> void:
-	# Create and initialize EOS Manager
+	# Create and initialize Network Manager (handles EOS or WebSocket)
 	network_manager = NetworkManager.new()
 	add_child(network_manager)
 	
@@ -36,10 +36,10 @@ func _ready() -> void:
 	_setup_button_connections()
 	_setup_network_signals()
 	
-	print("Using " + network_manager.get_active_backend() + " backend for multiplayer")
-	
 	# Set up multiplayer spawner
 	multiplayer_spawner.spawn_function = add_player
+	
+	print("Using " + network_manager.get_active_backend() + " backend for multiplayer")
 
 func _setup_button_connections() -> void:
 	"""Connect all UI button signals"""
@@ -133,7 +133,7 @@ func _on_lobby_joined(lobby_id: String, owner_id: String = "") -> void:
 	
 	online_id_label.text = "Joined"
 	
-	# Wait a moment for the lobby owner to see us, then both proceed to battle
+	# Wait a moment for the host to see us, then both proceed to battle
 	await get_tree().create_timer(1.5).timeout
 	start_pvp_match()
 
@@ -167,7 +167,7 @@ func _on_matchmaking_complete(opponent_id: String) -> void:
 	start_pvp_match()
 
 # ============================================================================
-# P2P CONNECTIONS
+# PEER CONNECTIONS
 # ============================================================================
 
 func _on_peer_connected(peer_user_id: String) -> void:
@@ -271,9 +271,9 @@ func _process(delta: float) -> void:
 		var lobby_info = network_manager.get_current_lobby_info()
 		if lobby_info.has("players"):
 			if lobby_info.players >= 2:
-			# Second player joined
-			waiting_for_opponent = false
-			start_pvp_match()
+				# Second player joined
+				waiting_for_opponent = false
+				start_pvp_match()
 
 func _exit_tree() -> void:
 	"""Clean up network resources when scene unloads"""
