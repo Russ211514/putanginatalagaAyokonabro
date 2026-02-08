@@ -167,11 +167,9 @@ func lock_lobby():
 func _on_peer_connected(peer_id: int) -> void:
 	display.text = "Player %d connected" % peer_id
 	print("Player %d connected" % peer_id)
-	lock_lobby()
-	peer_user_id = peer_id
-	$UI/Timer.stop()
-	await get_tree().create_timer(1.5).timeout
-	start_game()
+	if(is_server):
+		$UI/Play.visible = true
+		peer_user_id = peer_id
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	display.text = "Player %d disconnected" % peer_id
@@ -184,14 +182,8 @@ func start_game() -> void:
 	var game_instance = game_scene.instantiate()
 	game_instance.set("IsServer", is_server)
 	game_instance.set("PlayerName", DataSave.data.playerName)
-	get_tree().current_scene.add_child(game_instance)
+	get_tree().change_scene_to_file("res://Scenes/game_battle.tscn")
 	$UI.visible = false
-
-func _on_timer_timeout() -> void:
-	$UI.visible = true
-
-func _on_bot_game_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/direct_to_bot.tscn")
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/pvp language selection.tscn")
