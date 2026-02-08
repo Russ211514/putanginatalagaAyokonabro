@@ -26,8 +26,10 @@ var turn_time: float = TURN_TIME
 
 func _ready() -> void:
 	visible = false
-	player1_health_bar.init_health(MAX_HEALTH)
-	player2_health_bar.init_health(MAX_HEALTH)
+	player1_health_bar.max_value = MAX_HEALTH
+	player1_health_bar.value = MAX_HEALTH
+	player2_health_bar.max_value = MAX_HEALTH
+	player2_health_bar.value = MAX_HEALTH
 	
 	# Connect action buttons
 	fight_button.pressed.connect(_on_fight_pressed)
@@ -43,8 +45,10 @@ func _ready() -> void:
 
 func start_battle() -> void:
 	visible = true
-	player1_health_bar.init_health(MAX_HEALTH)
-	player2_health_bar.init_health(MAX_HEALTH)
+	player1_health_bar.max_value = MAX_HEALTH
+	player1_health_bar.value = MAX_HEALTH
+	player2_health_bar.max_value = MAX_HEALTH
+	player2_health_bar.value = MAX_HEALTH
 	player1_defending = false
 	player2_defending = false
 	current_turn = 1 if randf() > 0.5 else 2
@@ -125,7 +129,7 @@ func execute_action(action: String) -> void:
 			action_info.text = "HIT FOR %d DAMAGE (DEFENDED)" % final_damage
 		else:
 			action_info.text = "HIT FOR %d DAMAGE" % final_damage
-		player2_health_bar.health -= final_damage
+		player2_health_bar.value -= final_damage
 	else:
 		var final_damage = damage
 		if player1_defending:
@@ -133,7 +137,7 @@ func execute_action(action: String) -> void:
 			action_info.text = "HIT FOR %d DAMAGE (DEFENDED)" % final_damage
 		else:
 			action_info.text = "HIT FOR %d DAMAGE" % final_damage
-		player1_health_bar.health -= final_damage
+		player1_health_bar.value -= final_damage
 	
 	options_container.hide()
 	await get_tree().create_timer(2.0).timeout
@@ -146,12 +150,12 @@ func execute_action(action: String) -> void:
 	switch_turn()
 
 func check_victory() -> bool:
-	if player1_health_bar.health <= 0:
+	if player1_health_bar.value <= 0:
 		action_info.text = "PLAYER 2 WINS!"
 		await get_tree().create_timer(3.0).timeout
 		end_battle(2)
 		return true
-	elif player2_health_bar.health <= 0:
+	elif player2_health_bar.value <= 0:
 		action_info.text = "PLAYER 1 WINS!"
 		await get_tree().create_timer(3.0).timeout
 		end_battle(1)
@@ -186,7 +190,7 @@ func end_battle(winner: int) -> void:
 	player2_defending = false
 
 func get_player1_health() -> float:
-	return player1_health_bar.health
+	return player1_health_bar.value
 
 func get_player2_health() -> float:
-	return player2_health_bar.health
+	return player2_health_bar.value
