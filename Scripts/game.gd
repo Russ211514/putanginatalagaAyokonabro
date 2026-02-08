@@ -65,4 +65,3 @@ func start_battle() -> void:
 		BattleSystem.start_battle()
 		MultiplayerUI.hide()
 		Title.hide()
-

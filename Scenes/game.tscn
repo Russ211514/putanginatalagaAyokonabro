@@ -7,11 +7,11 @@
 [ext_resource type="Texture2D" uid="uid://dws5dgwtiwtwh" path="res://Art Assets/buttons/host_game_button.png" id="4_v158k"]
 [ext_resource type="Texture2D" uid="uid://fh6a7umyqk0l" path="res://Art Assets/buttons/copyCode button.png" id="5_1l0tm"]
 [ext_resource type="Texture2D" uid="uid://b01opm63luqfi" path="res://Art Assets/buttons/join_game_button.png" id="5_h4fw4"]
-[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="8_v158k"]
 [ext_resource type="Theme" uid="uid://2q3vbk6bmh2r" path="res://Themes/default_theme.tres" id="6_game"]
-[ext_resource type="PackedScene" uid="uid://cjbitdt03r8sc" path="res://Scenes/window_default.tscn" id="7_game"]
-[ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://Scenes/health_bar.tscn" id="8_game"]
-[ext_resource type="Script" uid="uid://game_battle_pvp" path="res://Scripts/game_battle.gd" id="9_game"]
+[ext_resource type="PackedScene" uid="uid://cjbitdt03r8sc" path="res://Scenes/health_bar.tscn" id="7_game"]
+[ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://player/html_player.tscn" id="8_game"]
+[ext_resource type="Texture2D" uid="uid://buv67q5krfss" path="res://Art Assets/buttons/stonebutton.png" id="8_v158k"]
+[ext_resource type="Script" uid="uid://bmndv0io8k31u" path="res://Scripts/game_battle.gd" id="9_game"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_ldgsr"]
 texture = ExtResource("1_wowpa")
@@ -64,10 +64,6 @@ region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_iivbl"]
 texture = ExtResource("8_v158k")
 region_rect = Rect2(67.8661, 53.960724, 184.1995, 72.08902)
-
-[sub_resource type="LabelSettings" id="LabelSettings_pvp"]
-font = ExtResource("2_i6g32")
-font_size = 25
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pvp1"]
 
@@ -325,10 +321,6 @@ alignment = 1
 
 [node name="Player1" parent="BattleLayout/Battle/Bottom" unique_id=1000000004 instance=ExtResource("7_game")]
 layout_mode = 2
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
 
 [node name="MarginContainer" type="MarginContainer" parent="BattleLayout/Battle/Bottom/Player1" unique_id=1000000005]
 layout_mode = 1
@@ -350,16 +342,10 @@ text = "PLAYER 1"
 
 [node name="HealthBar" parent="BattleLayout/Battle/Bottom/Player1/MarginContainer/VBoxContainer" unique_id=1000000008 instance=ExtResource("8_game")]
 layout_mode = 2
-value = 150.0
-show_percentage = true
 
 [node name="Player2" parent="BattleLayout/Battle/Bottom" unique_id=1000000009 instance=ExtResource("7_game")]
 layout_mode = 2
 size_flags_stretch_ratio = 1.5
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
 
 [node name="MarginContainer" type="MarginContainer" parent="BattleLayout/Battle/Bottom/Player2" unique_id=1000000010]
 layout_mode = 1
@@ -382,8 +368,6 @@ horizontal_alignment = 2
 
 [node name="HealthBar" parent="BattleLayout/Battle/Bottom/Player2/MarginContainer/VBoxContainer" unique_id=1000000013 instance=ExtResource("8_game")]
 layout_mode = 2
-value = 150.0
-show_percentage = true
 
 [node name="Options" parent="BattleLayout/Battle" unique_id=1000000014 instance=ExtResource("7_game")]
 custom_minimum_size = Vector2(240, 240)
@@ -393,10 +377,6 @@ offset_top = 813.0
 offset_right = 826.0
 offset_bottom = 1053.0
 size_flags_stretch_ratio = 1.5
-patch_margin_left = 10
-patch_margin_top = 10
-patch_margin_right = 10
-patch_margin_bottom = 10
 
 [node name="OptionsVBox" type="VBoxContainer" parent="BattleLayout/Battle/Options" unique_id=1000000015]
 layout_mode = 1
@@ -427,7 +407,7 @@ text = "ULTIMATE"
 
 [node name="Info" type="Label" parent="BattleLayout/Battle" unique_id=1000000020]
 custom_minimum_size = Vector2(400, 80)
-anchors_preset = 5
+layout_mode = 0
 anchor_left = 0.5
 anchor_right = 0.5
 offset_left = -255.0
@@ -456,7 +436,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("6_game")
 theme_override_font_sizes/font_size = 60
-text = ""
 horizontal_alignment = 1
 vertical_alignment = 1
 

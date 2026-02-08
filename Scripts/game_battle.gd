@@ -61,21 +61,21 @@ func _process(delta: float) -> void:
 		magic_cooldown -= delta
 		if magic_cooldown <= 0:
 			magic_cooldown = 0
-			if current_turn == multiplayer.get_unique_id():
+			if current_turn == 1 or current_turn == 2:
 				magic_button.disabled = false
 	
 	if ultimate_cooldown > 0:
 		ultimate_cooldown -= delta
 		if ultimate_cooldown <= 0:
 			ultimate_cooldown = 0
-			if current_turn == multiplayer.get_unique_id():
+			if current_turn == 1 or current_turn == 2:
 				ultimate_button.disabled = false
 	
 	if defend_cooldown > 0:
 		defend_cooldown -= delta
 		if defend_cooldown <= 0:
 			defend_cooldown = 0
-			if current_turn == multiplayer.get_unique_id():
+			if current_turn == 1 or current_turn == 2:
 				defend_button.disabled = false
 
 func _on_fight_pressed() -> void:
