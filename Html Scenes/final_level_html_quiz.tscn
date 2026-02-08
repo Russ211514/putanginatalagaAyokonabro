@@ -183,6 +183,7 @@ theme_override_styles/disabled = SubResource("StyleBoxTexture_etfy8")
 autowrap_mode = 3
 
 [node name="GameOver" type="ColorRect" parent="." unique_id=1537896141]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0

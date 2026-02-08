@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://bdetjjb7ls0i2"]
+[gd_scene format=3 uid="uid://bdetjjb7ls0i2"]
 
 [ext_resource type="Script" uid="uid://by7ed3yyvj3mr" path="res://Scripts/python_tutorial_start.gd" id="1_hdfwd"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="1_quiql"]

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cgrregws01ham"]
+[gd_scene format=3 uid="uid://cgrregws01ham"]
 
 [ext_resource type="Script" uid="uid://by6sq51a664ap" path="res://Scripts/python_tutorial.gd" id="1_ghmmv"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="2_aej13"]

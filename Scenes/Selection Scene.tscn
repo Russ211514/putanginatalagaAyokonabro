@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://dnr4gofaqtr22"]
+[gd_scene format=3 uid="uid://dnr4gofaqtr22"]
 
 [ext_resource type="Script" uid="uid://jpmjla0623pf" path="res://Scripts/selection_scene.gd" id="1_bl4ax"]
 [ext_resource type="Texture2D" uid="uid://cchw0nrt5a14n" path="res://Art Assets/backgrounds/bground.png" id="1_nrel7"]

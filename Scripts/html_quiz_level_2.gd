@@ -72,7 +72,7 @@ func game_over() -> void:
 		$GameOver/Restart.hide()
 		$GameOver.show()
 		# Mark level 1 as completed and show next level button
-		LevelCore.lvl1_completed = true
+		LevelCore.html_mini_quiz_completed = true
 		if next_level_button:
 			next_level_button.show()
 			next_level_button.pressed.connect(_on_next_level_pressed)
