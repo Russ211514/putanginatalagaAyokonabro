@@ -32,7 +32,18 @@ var player_defending = false
 var current_action = ""
 var bot_difficulty: int = 1  # 0 = easy, 1 = normal, 2 = hard
 
+# Multiplayer variables
+var network_manager: NetworkManager
+var is_multiplayer: bool = false
+var opponent_id: String = ""
+var local_player_id: String = ""
+var is_turn_locked: bool = false
+var opponent_action: Dictionary = {}
+
 func _ready() -> void:
+	# Check if this is a multiplayer battle
+	_initialize_network()
+	
 	# Capture bot difficulty from parent scene
 	if has_meta("BotDifficulty"):
 		bot_difficulty = get_meta("BotDifficulty")
@@ -67,7 +78,7 @@ func _ready() -> void:
 	if randf() > 0.5:
 		current_turn = "enemy"
 		if info:
-			info.text = "ENEMY'S TURN"
+			info.text = "OPPONENT'S TURN"
 		_options_menu.hide()
 	else:
 		current_turn = "player"
@@ -85,7 +96,24 @@ func _ready() -> void:
 		if player_turn_timer_label and player_turn_max_time > 0:
 			player_turn_timer_label.show()
 		if info:
-			info.text = "PLAYER'S TURN"
+			info.text = "YOUR TURN"
+
+func _initialize_network() -> void:
+	"""Initialize network manager if in multiplayer mode"""
+	# Get network manager from autoload
+	if get_tree().root.has_node("NetworkManager"):
+		network_manager = get_tree().root.get_node("NetworkManager")
+		is_multiplayer = true
+		
+		local_player_id = network_manager.get_local_player_id()
+		opponent_id = network_manager.get_opponent_id()
+		
+		print("Battle initialized in multiplayer mode")
+		print("Local player: " + local_player_id)
+		print("Opponent: " + opponent_id)
+		
+		# Connect network signals
+		network_manager.message_received.connect(_on_opponent_message_received)
 
 func _process(delta: float) -> void:
 	if magic_cooldown > 0:
@@ -212,13 +240,39 @@ func _on_answer_button_pressed(button: Button) -> void:
 			ultimate_cooldown = 60.0
 		
 		if not perform_action():
-			switch_turn()
+			_submit_action_to_opponent()
 	else:
 		if current_action == "magic":
 			magic_cooldown = 20.0
 		elif current_action == "ultimate":
 			ultimate_cooldown = 60.0
-		lose_turn()
+		_submit_action_to_opponent()
+
+func _submit_action_to_opponent() -> void:
+	"""Send player action to opponent"""
+	if is_multiplayer and network_manager:
+		var action_data = {
+			"action": current_action,
+			"defending": player_defending,
+			"timestamp": Time.get_ticks_msec()
+		}
+		
+		print("Sending action to opponent: ", action_data)
+		network_manager.send_message(opponent_id, action_data)
+	
+	# Continue with turn logic
+	switch_turn()
+
+func _on_opponent_message_received(data: Dictionary) -> void:
+	"""Receive action from opponent"""
+	if data.has("action"):
+		print("Received opponent action: ", data.action)
+		opponent_action = data
+		
+		# If it's opponent's turn, process their action
+		if current_turn == "enemy":
+			await get_tree().create_timer(0.5).timeout
+			_process_opponent_action()
 
 func perform_action() -> bool:
 	var damage = 0
@@ -235,29 +289,75 @@ func perform_action() -> bool:
 		player_health_bar.health -= damage
 	return check_victory()
 
+func _process_opponent_action() -> void:
+	"""Process opponent's received action"""
+	if opponent_action.is_empty():
+		switch_turn()
+		return
+	
+	var action = opponent_action.get("action", "")
+	var damage = 0
+	
+	match action:
+		"fight":
+			damage = 10
+		"magic":
+			damage = 15
+		"ultimate":
+			damage = 25
+		"defend":
+			print("Opponent is defending")
+	
+	if damage > 0:
+		player_health_bar.health -= damage
+	
+	opponent_action = {}
+	check_victory()
+	switch_turn()
+
 func check_victory() -> bool:
 	if player_health_bar.health <= 0:
 		lose.visible = true
 		# Handle lose
-		get_tree().create_timer(2.0).timeout.connect(func(): get_tree().change_scene_to_file("res://Scenes/offline selection.tscn"))
+		await get_tree().create_timer(2.0).timeout
+		_return_to_menu()
 		return true
 	elif enemy_health_bar.health <= 0:
 		win.visible = true
 		# Handle win
-		get_tree().create_timer(2.0).timeout.connect(func(): get_tree().change_scene_to_file("res://Scenes/offline selection.tscn"))
+		await get_tree().create_timer(2.0).timeout
+		_return_to_menu()
 		return true
 	return false
+
+func _return_to_menu() -> void:
+	"""Return to menu after battle"""
+	if is_multiplayer and network_manager:
+		network_manager.leave_lobby()
+	
+	get_tree().change_scene_to_file("res://Scenes/game_menu.tscn")
 
 func switch_turn() -> void:
 	if current_turn == "player":
 		defend_button.disabled = (defend_cooldown > 0)
-		current_turn = ""
+		current_turn = "enemy"
+		_options_menu.hide()
+		if info:
+			info.text = "OPPONENT'S TURN"
+		
+		if is_multiplayer:
+			# Wait for opponent's action
+			await get_tree().create_timer(3.0).timeout  # Give opponent time to act
+			if opponent_action.is_empty():
+				# If no action received, assume they passed
+				opponent_action = {"action": "fight"}
+			_process_opponent_action()
 	else:
 		current_turn = "player"
 		player_defending = false
 		_options_menu.show()
 		if info:
-			info.text = "PLAYER'S TURN"
+			info.text = "YOUR TURN"
 		
 		# Start player turn timer
 		player_timeout_triggered = false
@@ -274,5 +374,15 @@ func lose_turn() -> void:
 	# Player loses their turn without taking action
 	_options_menu.hide()
 	html_game_controller.hide()
-	# Enemy still gets their turn
+	
+	# Notify opponent that we're passing turn
+	if is_multiplayer and network_manager:
+		var action_data = {
+			"action": "timeout",
+			"defending": player_defending,
+			"timestamp": Time.get_ticks_msec()
+		}
+		network_manager.send_message(opponent_id, action_data)
+	
+	# Enemy gets their turn
 	switch_turn()

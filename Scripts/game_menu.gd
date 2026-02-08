@@ -131,11 +131,11 @@ func _on_lobby_joined(lobby_id: String, _owner_id: String = "") -> void:
 	"""Called when successfully joined a lobby"""
 	print("Lobby joined: " + lobby_id)
 	
-	online_id_label.text = "Joined"
+	online_id_label.text = "Connected!"
 	
-	# Wait a moment for the lobby owner to see us, then both proceed to battle
-	await get_tree().create_timer(1.5).timeout
-	start_pvp_match()
+	# Wait a moment for the lobby owner to be ready, then proceed to battle
+	await get_tree().create_timer(1.0).timeout
+	_transition_to_battle()
 
 # ============================================================================
 # MATCHMAKING
@@ -164,7 +164,7 @@ func _on_matchmaking_complete(opponent_id: String) -> void:
 	opponent_user_id = opponent_id
 	
 	await get_tree().create_timer(1.0).timeout
-	start_pvp_match()
+	_transition_to_battle()
 
 # ============================================================================
 # P2P CONNECTIONS
@@ -178,6 +178,23 @@ func _on_peer_connected(peer_user_id: String) -> void:
 # ============================================================================
 # GAME LOGIC
 # ============================================================================
+
+# ============================================================================
+# GAME LOGIC & SCENE TRANSITIONS
+# ============================================================================
+
+func _transition_to_battle() -> void:
+	"""Transition to the battle scene with network manager"""
+	print("Transitioning to battle scene...")
+	
+	# Store network manager as an autoload so it persists
+	if not get_tree().root.has_node("NetworkManager"):
+		network_manager.name = "NetworkManager"
+		get_tree().root.add_child(network_manager)
+		network_manager.owner = get_tree().root  # Make it persist
+	
+	# Load the battle scene
+	get_tree().change_scene_to_file("res://Scenes/game_battle.tscn")
 
 func start_pvp_match() -> void:
 	"""Start the PvP battle"""
@@ -193,12 +210,8 @@ func start_pvp_match() -> void:
 	MultiplayerUI.hide()
 	Title.hide()
 	
-	# Find battle system and start
-	if has_node("BattleLayout"):
-		var battle_system = $BattleLayout
-		if battle_system.has_method("start_pvp_battle"):
-			var my_player_id = network_manager.get_local_player_id()
-			battle_system.start_pvp_battle(my_player_id, opponent_user_id)
+	# Transition to battle scene
+	_transition_to_battle()
 
 func add_player(pid) -> Node:
 	"""Instantiate a player at the appropriate spawn point"""
@@ -271,9 +284,10 @@ func _process(_delta: float) -> void:
 		var lobby_info = network_manager.get_current_lobby_info()
 		if lobby_info.has("players"):
 			if lobby_info.players >= 2:
-			# Second player joined
+				# Second player joined, transition to battle
 				waiting_for_opponent = false
-				start_pvp_match()
+				print("Second player joined, transitioning to battle...")
+				_transition_to_battle()
 
 func _exit_tree() -> void:
 	"""Clean up network resources when scene unloads"""
