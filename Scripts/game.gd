@@ -3,6 +3,7 @@ class_name Game
 
 @onready var MultiplayerUI = $UI/Multiplayer
 @onready var Title = $RoomLabel
+@onready var BattleSystem = $BattleLayout
 
 const PLAYER = preload("res://player/html_player.tscn")
 
@@ -57,3 +58,11 @@ func _on_copy_oid_pressed() -> void:
 
 func _on_back_pressed() -> void:
 	get_tree().change_scene_to_file("res://Scenes/pvp language selection.tscn")
+
+func start_battle() -> void:
+	"""Start the PvP battle when both players are ready"""
+	if BattleSystem:
+		BattleSystem.start_battle()
+		MultiplayerUI.hide()
+		Title.hide()
+
