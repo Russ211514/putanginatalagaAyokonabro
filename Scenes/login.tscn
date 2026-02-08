@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://bhipiu75lj7xe"]
 
 [ext_resource type="Script" uid="uid://dgnhjqgakjad3" path="res://Scripts/login.gd" id="1_5cd0j"]
+[ext_resource type="PackedScene" uid="uid://oxh800noswjt" path="res://Scenes/game_battle.tscn" id="2_hbxdl"]
 
 [node name="Login" type="Control" unique_id=128332013]
 layout_mode = 3
@@ -10,3 +11,37 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_5cd0j")
+game_scene = ExtResource("2_hbxdl")
+
+[node name="MessageDisplay" type="Label" parent="." unique_id=330629086]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = 410.0
+offset_right = 20.0
+offset_bottom = 425.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 60
+text = "MESSAGE"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Temp" type="AspectRatioContainer" parent="." unique_id=154184194]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="BotGame" type="Button" parent="Temp" unique_id=822577692]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Temp" unique_id=1274256870]
+layout_mode = 2
+
+[node name="Timer" type="Timer" parent="." unique_id=1627533349]

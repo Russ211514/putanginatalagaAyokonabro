@@ -67,14 +67,24 @@ offset_right = 1614.0
 offset_bottom = 1079.0
 texture = ExtResource("1_4sb7q")
 
-[node name="Title" type="Label" parent="TextureRect" unique_id=1009104115]
-layout_mode = 1
+[node name="SpawnPoint" type="Marker2D" parent="TextureRect" unique_id=2099117787]
+position = Vector2(319, 563)
+
+[node name="SpawnPoint2" type="Marker2D" parent="TextureRect" unique_id=1859537458]
+position = Vector2(1572, 563)
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1727968665]
+position = Vector2(654, 537)
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1058236128]
+
+[node name="Title" type="Label" parent="UI" unique_id=1009104115]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -773.0
+offset_left = -1079.5
 offset_top = 90.0
-offset_right = 773.0
+offset_right = 466.5
 offset_bottom = 284.0
 grow_horizontal = 2
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
@@ -89,17 +99,6 @@ theme_override_font_sizes/font_size = 220
 text = "CUSTOM LOBBY"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="SpawnPoint" type="Marker2D" parent="TextureRect" unique_id=2099117787]
-position = Vector2(319, 563)
-
-[node name="SpawnPoint2" type="Marker2D" parent="TextureRect" unique_id=1859537458]
-position = Vector2(1572, 563)
-
-[node name="Camera2D" type="Camera2D" parent="." unique_id=1727968665]
-position = Vector2(654, 537)
-
-[node name="UI" type="CanvasLayer" parent="." unique_id=1058236128]
 
 [node name="Multiplayer" type="Control" parent="UI" unique_id=343733436]
 layout_mode = 3
@@ -166,9 +165,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -200.0
-offset_top = 18.0
+offset_top = 79.0
 offset_right = 125.0
-offset_bottom = 58.0
+offset_bottom = 119.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.8784314, 0.78431374, 0.6039216, 1)
@@ -181,23 +180,6 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_2m02w")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_2m02w")
 text = "COPY CODE"
 
-[node name="Button" type="Button" parent="UI/Multiplayer" unique_id=1655268108]
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -117.5
-offset_top = 93.0
-offset_right = 117.5
-offset_bottom = 133.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_color = Color(0.8784314, 0.78431374, 0.6039216, 1)
-theme_override_constants/outline_size = 10
-text = "FIND MATCH"
-
 [node name="VBoxContainer" type="VBoxContainer" parent="UI/Multiplayer" unique_id=702060746]
 layout_mode = 1
 anchors_preset = 8
@@ -206,9 +188,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -162.5
-offset_top = -198.0
+offset_top = -207.0
 offset_right = 162.5
-offset_bottom = -14.0
+offset_bottom = -7.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 40
@@ -218,7 +200,7 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.8784314, 0.78431374, 0.6039216, 1)
 theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("2_2bm1k")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 theme_override_styles/normal = SubResource("StyleBoxTexture_2sgss")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_2sgss")
 theme_override_styles/hover = SubResource("StyleBoxTexture_2sgss")
@@ -230,12 +212,19 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0.8784314, 0.78431374, 0.6039216, 1)
 theme_override_constants/outline_size = 10
 theme_override_fonts/font = ExtResource("2_2bm1k")
-theme_override_font_sizes/font_size = 50
+theme_override_font_sizes/font_size = 45
 theme_override_styles/normal = SubResource("StyleBoxTexture_2k0dn")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_2k0dn")
 theme_override_styles/hover = SubResource("StyleBoxTexture_2k0dn")
 theme_override_styles/disabled = SubResource("StyleBoxTexture_2k0dn")
 text = "JOIN GAME"
+
+[node name="FindMatch" type="Button" parent="UI/Multiplayer/VBoxContainer" unique_id=1655268108]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8784314, 0.78431374, 0.6039216, 1)
+theme_override_constants/outline_size = 10
+theme_override_font_sizes/font_size = 45
+text = "FIND MATCH"
 
 [node name="OnlineID" type="Label" parent="UI/Multiplayer" unique_id=1591645098]
 unique_name_in_owner = true
@@ -246,9 +235,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -146.5
-offset_top = -51.0
+offset_top = 10.0
 offset_right = 146.5
-offset_bottom = -7.0
+offset_bottom = 54.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(0.8784314, 0.78431374, 0.6039216, 1)

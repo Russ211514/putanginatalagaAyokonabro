@@ -1,4 +1,4 @@
-extends Control
+extends Node2D
 
 @onready var _options: WindowDefault = $BattleLayout/Battle/Options
 @onready var _options_menu: Menu = $BattleLayout/Battle/Options/Options
@@ -40,13 +40,11 @@ var local_player_id: String = ""
 var is_turn_locked: bool = false
 var opponent_action: Dictionary = {}
 
+var IsServer: bool = false
+
 func _ready() -> void:
 	# Check if this is a multiplayer battle
 	_initialize_network()
-	
-	# Capture bot difficulty from parent scene
-	if has_meta("BotDifficulty"):
-		bot_difficulty = get_meta("BotDifficulty")
 	
 	if question_info:
 		question_info.hide()
@@ -274,7 +272,7 @@ func _on_opponent_message_received(data: Dictionary) -> void:
 			await get_tree().create_timer(0.5).timeout
 			_process_opponent_action()
 
-func perform_action() -> bool:
+func perform_action():
 	var damage = 0
 	match current_action:
 		"fight":
@@ -287,7 +285,7 @@ func perform_action() -> bool:
 		enemy_health_bar.health -= damage
 	else:
 		player_health_bar.health -= damage
-	return check_victory()
+	check_victory()
 
 func _process_opponent_action() -> void:
 	"""Process opponent's received action"""
