@@ -202,3 +202,16 @@ func add_player(pid) -> Node:
 func _on_copy_oid_pressed() -> void:
 	"""Copy the room code to clipboard"""
 	if is_host and waiting_for_opponent:
+		DisplayServer.clipboard_set(room_code)
+		copy_oid_button.text = "COPIED!"
+		await get_tree().create_timer(2.0).timeout
+		copy_oid_button.text = "COPY CODE"
+
+func _on_back_pressed() -> void:
+	"""Return to language selection"""
+	get_tree().change_scene_to_file("res://Scenes/pvp language selection.tscn")
+
+func start_battle() -> void:
+	"""Start the PvP battle when both players are ready"""
+	if BattleSystem and players.size() >= 2:
+		BattleSystem.start_battle()
