@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://oxh800noswjt"]
 
 [ext_resource type="Script" uid="uid://b4h7jgw5xhajg" path="res://Scripts/background_sprite.gd" id="1_07knb"]
-[ext_resource type="Script" uid="uid://bflwgtda8i7yw" path="res://Scenes/game_battle.gd" id="1_7x71r"]
+[ext_resource type="Script" uid="uid://bflwgtda8i7yw" path="res://Scripts/game_battle.gd" id="1_7x71r"]
 [ext_resource type="Theme" uid="uid://2q3vbk6bmh2r" path="res://Themes/default_theme.tres" id="2_7x71r"]
 [ext_resource type="PackedScene" uid="uid://cvj375674d1g6" path="res://Scenes/window_default.tscn" id="3_6l16w"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="4_jf7jn"]
