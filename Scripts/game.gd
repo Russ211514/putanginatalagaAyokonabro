@@ -201,11 +201,13 @@ func add_player(pid) -> Node:
 
 func _on_copy_oid_pressed() -> void:
 	"""Copy the room code to clipboard"""
-	if is_host and waiting_for_opponent:
+	if is_host and not room_code.is_empty():
 		DisplayServer.clipboard_set(room_code)
 		copy_oid_button.text = "COPIED!"
 		await get_tree().create_timer(2.0).timeout
 		copy_oid_button.text = "COPY CODE"
+	else:
+		online_id_label.text = "Not hosting"
 
 func _on_back_pressed() -> void:
 	"""Return to language selection"""
