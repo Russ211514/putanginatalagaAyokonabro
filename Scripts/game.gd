@@ -63,8 +63,8 @@ func _on_host_pressed() -> void:
 	
 	# Disable join UI
 	join_button.disabled = true
-	oid_input.disabled = true
-	room_name_input.disabled = true
+	oid_input.editable = false
+	room_name_input.editable = false
 	
 	# Update status
 	copy_oid_button.text = "WAITING..."
@@ -115,9 +115,9 @@ func _on_join_pressed() -> void:
 	
 	# Disable host UI
 	host_button.disabled = true
-	room_name_input.disabled = true
+	room_name_input.editable = false
 	copy_oid_button.disabled = true
-	oid_input.disabled = true
+	oid_input.editable = false
 	
 	# Update status
 	join_button.text = "JOINING..."
@@ -162,8 +162,8 @@ func _on_connection_timeout() -> void:
 	host_button.disabled = false
 	join_button.disabled = false
 	join_button.text = "JOIN GAME"
-	room_name_input.disabled = false
-	oid_input.disabled = false
+	room_name_input.editable = true
+	oid_input.editable = true
 	copy_oid_button.disabled = false
 	copy_oid_button.text = "COPY CODE"
 
