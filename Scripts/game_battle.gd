@@ -144,7 +144,7 @@ func execute_action(action: String) -> void:
 	action_info.text = ""
 	
 	# Check for victory
-	if check_victory():
+	if await check_victory():
 		return
 	
 	switch_turn()
