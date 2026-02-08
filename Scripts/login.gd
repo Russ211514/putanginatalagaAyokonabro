@@ -55,7 +55,7 @@ func _ready() -> void:
 	await HAuth.login_anonymous_async("User")
 
 func _on_logging_interface_callback(msg) -> void:
-	msg = EOS.Logging.LogMessage.from(msg) as EOS.logging.LogMessage
+	msg = EOS.Logging.LogMessage.from(msg) as EOS.Logging.LogMessage
 	print("SDK %s | %s" % [msg.category, msg.message])
 	
 func _exit_tree() -> void:
