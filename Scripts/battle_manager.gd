@@ -1,4 +1,4 @@
-extends Control
+extends Node2D
 class_name BattleManager
 
 # UI References
@@ -29,6 +29,8 @@ var opponent_health: int = 150
 var current_turn_owner: int = 1  # 1 = server, 2+ = clients
 var my_peer_id: int = 0
 var is_my_turn: bool = false
+var last_action: String = ""  # Track the last action taken
+var last_action_peer: int = 0  # Track which peer took the action
 
 # Cooldowns
 var magic_cooldown: float = 0.0
@@ -55,6 +57,7 @@ const TURN_TIME = 20.0
 
 func _ready() -> void:
 	my_peer_id = multiplayer.get_unique_id()
+	print("Battle Manager ready - my peer id: ", my_peer_id)
 	
 	lose.visible = false
 	win.visible = false
@@ -78,7 +81,11 @@ func _ready() -> void:
 	
 	# Start the game - server decides who goes first
 	if multiplayer.is_server():
-		var starting_peer_id = 1 if randf() > 0.5 else multiplayer.get_peers()[0] if multiplayer.get_peers().size() > 0 else 1
+		var peers = multiplayer.get_peers()
+		var starting_peer_id = 1
+		if peers.size() > 0:
+			starting_peer_id = 1 if randf() > 0.5 else peers[0]
+		print("Server starting turn order - first player: ", starting_peer_id)
 		sync_turn.rpc(starting_peer_id)
 	
 	update_turn_display()
@@ -135,29 +142,33 @@ func _process(delta: float) -> void:
 func _on_fight_pressed() -> void:
 	if not is_my_turn:
 		return
-	execute_action.rpc_id(1, my_peer_id, "fight")
+	print("Fight pressed by peer: ", my_peer_id)
+	execute_action.rpc(my_peer_id, "fight")
 	options_menu.hide()
 	start_question(Enum.Difficulty.EASY)
 
 func _on_magic_pressed() -> void:
 	if not is_my_turn or magic_cooldown > 0:
 		return
-	execute_action.rpc_id(1, my_peer_id, "magic")
+	print("Magic pressed by peer: ", my_peer_id)
+	execute_action.rpc(my_peer_id, "magic")
 	options_menu.hide()
 	start_question(Enum.Difficulty.MEDIUM)
 
 func _on_defend_pressed() -> void:
 	if not is_my_turn or defend_cooldown > 0:
 		return
+	print("Defend pressed by peer: ", my_peer_id)
 	player_defend_bars = DEFEND_BARS
 	defend_cooldown = DEFEND_COOLDOWN_TIME
-	execute_action.rpc_id(1, my_peer_id, "defend")
+	execute_action.rpc(my_peer_id, "defend")
 	switch_turn()
 
 func _on_ultimate_pressed() -> void:
 	if not is_my_turn or ultimate_cooldown > 0:
 		return
-	execute_action.rpc_id(1, my_peer_id, "ultimate")
+	print("Ultimate pressed by peer: ", my_peer_id)
+	execute_action.rpc(my_peer_id, "ultimate")
 	options_menu.hide()
 	start_question(Enum.Difficulty.HARD)
 
@@ -199,17 +210,28 @@ func _on_answer_button_pressed(button: Button) -> void:
 	questions.hide()
 	
 	# Send answer result to server
-	answer_submitted.rpc_id(1, my_peer_id, is_correct)
+	print("Sending answer to server - peer: ", my_peer_id, " correct: ", is_correct)
+	answer_submitted.rpc(my_peer_id, is_correct)
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
+func execute_action(peer_id: int, action: String) -> void:
+	"""Store the action that was performed"""
+	print("Action executed - peer: ", peer_id, " action: ", action)
+	last_action = action
+	last_action_peer = peer_id
+
+@rpc("any_peer", "call_local", "reliable")
 func answer_submitted(peer_id: int, is_correct: bool) -> void:
 	"""Process answer and apply damage"""
+	print("Answer submitted - peer: ", peer_id, " correct: ", is_correct, " last action: ", last_action)
+	
 	# Only server processes this
 	if not multiplayer.is_server():
 		return
 	
-	var action = get_player_action(peer_id)
+	var action = last_action
 	if action == "":
+		print("ERROR: No action found for peer ", peer_id)
 		return
 	
 	var damage = 0
@@ -230,25 +252,27 @@ func answer_submitted(peer_id: int, is_correct: bool) -> void:
 		opponent_defend_bars -= 1
 	
 	opponent_health -= damage
+	print("Damage applied: ", damage, " - opponent health: ", opponent_health)
 	sync_health.rpc(player_health, opponent_health)
 	
 	if not check_victory():
 		switch_turn()
 
-@rpc("authority", "call_local", "reliable")
-func execute_action(peer_id: int, action: String) -> void:
-	"""Execute player action on server"""
-	# Only called on server
-	if not multiplayer.is_server():
-		return
-
 func switch_turn() -> void:
 	"""Switch to opponent's turn"""
-	var peers = multiplayer.get_peers()
-	var next_peer = peers[0] if peers.size() > 0 else 1
+	# Only server handles turn switching
+	if not multiplayer.is_server():
+		return
 	
-	if multiplayer.is_server():
-		sync_turn.rpc(next_peer)
+	var peers = multiplayer.get_peers()
+	var next_peer = 1  # Default to server
+	
+	if peers.size() > 0:
+		# Alternate between server (1) and client
+		next_peer = peers[0]
+	
+	print("Server switching turn to: ", next_peer)
+	sync_turn.rpc(next_peer)
 	
 	# Reset defend
 	player_defend_bars = 0
@@ -258,9 +282,10 @@ func lose_turn() -> void:
 	"""Player loses turn without action"""
 	switch_turn()
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func sync_turn(peer_id: int) -> void:
 	"""Sync whose turn it is"""
+	print("Syncing turn to peer: ", peer_id)
 	current_turn_owner = peer_id
 	is_my_turn = (peer_id == my_peer_id)
 	turn_timer = TURN_TIME
@@ -268,9 +293,10 @@ func sync_turn(peer_id: int) -> void:
 	update_turn_display()
 	update_buttons()
 
-@rpc("authority", "call_local", "reliable")
+@rpc("any_peer", "call_local", "reliable")
 func sync_health(p_health: int, o_health: int) -> void:
 	"""Sync health across all players"""
+	print("Syncing health - player: ", p_health, " opponent: ", o_health)
 	player_health = p_health
 	opponent_health = o_health
 	update_health_display()
@@ -319,11 +345,3 @@ func show_defeat() -> void:
 	lose.visible = true
 	await get_tree().create_timer(3.0).timeout
 	get_tree().change_scene_to_file("res://Scenes/offline selection.tscn")
-
-func get_player_action(peer_id: int) -> String:
-	"""Get the last action from a player - implement based on your needs"""
-	# This would need to be called from where the action was initiated
-	return ""
-
-
-
