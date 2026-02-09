@@ -29,13 +29,19 @@ var player_timeout_triggered: bool = false
 
 var current_turn = "player"
 var player_defending = false
+var opponent_defending = false
 var current_action = ""
-var bot_difficulty: int = 1  # 0 = easy, 1 = normal, 2 = hard
+var is_server = false
+
+# Network variables
+var waiting_for_opponent = false
+var opponent_action = ""
+var opponent_correct = false
 
 func _ready() -> void:
-	# Capture bot difficulty from parent scene
-	if has_meta("BotDifficulty"):
-		bot_difficulty = get_meta("BotDifficulty")
+	# Get network info from game_menu
+	if has_meta("IsServer"):
+		is_server = get_meta("IsServer")
 	
 	if question_info:
 		question_info.hide()
@@ -63,30 +69,25 @@ func _ready() -> void:
 			if button is Button:
 				button.pressed.connect(_on_answer_button_pressed.bind(button))
 	
-	# Randomize starting turn
-	if randf() > 0.5:
-		current_turn = "enemy"
-		if info:
-			info.text = "ENEMY'S TURN"
-		_options_menu.hide()
-		enemy_turn()
-	else:
+	# Randomize starting turn - server decides
+	if is_server:
+		var starting_turn = "player" if randf() > 0.5 else "opponent"
+		sync_turn.rpc(starting_turn)
+	
+	# Server starts as player, client starts as opponent
+	if is_server:
 		current_turn = "player"
-		# Set timer for player's first turn
-		match bot_difficulty:
-			0:
-				player_turn_max_time = 0.0
-			1:
-				player_turn_max_time = 35.0
-			2:
-				player_turn_max_time = 25.0
-			_:
-				player_turn_max_time = 35.0
-		player_turn_time = player_turn_max_time
-		if player_turn_timer_label and player_turn_max_time > 0:
-			player_turn_timer_label.show()
 		if info:
-			info.text = "PLAYER'S TURN"
+			info.text = "YOUR TURN"
+		player_turn_max_time = 35.0
+		player_turn_time = player_turn_max_time
+		if player_turn_timer_label:
+			player_turn_timer_label.show()
+	else:
+		current_turn = "opponent"
+		if info:
+			info.text = "OPPONENT'S TURN"
+		_options_menu.hide()
 
 func _process(delta: float) -> void:
 	if magic_cooldown > 0:
@@ -164,6 +165,8 @@ func _on_defend_pressed() -> void:
 	current_action = "defend"
 	player_defending = true
 	defend_cooldown = 15.0
+	# Send defend action to opponent
+	opponent_action_received.rpc("defend", true)
 	switch_turn()
 
 func _on_ultimate_pressed() -> void:
@@ -204,7 +207,7 @@ func _on_answer_button_pressed(button: Button) -> void:
 	# Hide question UI
 	python_game_controller.hide()
 	
-	# Handle result
+	# Handle result and send to opponent
 	if is_correct:
 		# Set cooldown for magic and ultimate actions
 		if current_action == "magic":
@@ -212,6 +215,8 @@ func _on_answer_button_pressed(button: Button) -> void:
 		elif current_action == "ultimate":
 			ultimate_cooldown = 60.0
 		
+		# Send correct answer to opponent
+		opponent_action_received.rpc(current_action, true)
 		if not perform_action():
 			switch_turn()
 	else:
@@ -219,6 +224,8 @@ func _on_answer_button_pressed(button: Button) -> void:
 			magic_cooldown = 20.0
 		elif current_action == "ultimate":
 			ultimate_cooldown = 60.0
+		# Send wrong answer to opponent
+		opponent_action_received.rpc(current_action, false)
 		lose_turn()
 
 func perform_action() -> bool:
@@ -230,11 +237,44 @@ func perform_action() -> bool:
 			damage = 15
 		"ultimate":
 			damage = 25
-	if current_turn == "player":
-		enemy_health_bar.health -= damage
-	else:
-		player_health_bar.health -= damage
+	
+	# Apply defender's reduction
+	if opponent_defending:
+		damage *= 0.75
+	
+	enemy_health_bar.health -= damage
 	return check_victory()
+
+func perform_opponent_action() -> bool:
+	"""Perform opponent's action"""
+	var damage = 0
+	match opponent_action:
+		"fight":
+			damage = 10
+		"magic":
+			damage = 15
+		"ultimate":
+			damage = 25
+	
+	# Apply defender's reduction
+	if player_defending:
+		damage *= 0.75
+	
+	player_health_bar.health -= damage
+	return check_victory()
+
+@rpc("any_peer", "call_local", "reliable")
+func opponent_action_received(action: String, is_correct: bool) -> void:
+	"""Receive opponent's action and update game state"""
+	opponent_action = action
+	opponent_correct = is_correct
+	opponent_defending = (action == "defend" and is_correct)
+	
+	if is_correct:
+		if not perform_opponent_action():
+			switch_turn()
+	else:
+		switch_turn()
 
 func check_victory() -> bool:
 	if player_health_bar.health <= 0:
@@ -250,101 +290,49 @@ func check_victory() -> bool:
 	return false
 
 func switch_turn() -> void:
+	"""Switch turn between players"""
 	if current_turn == "player":
+		current_turn = "opponent"
 		defend_button.disabled = (defend_cooldown > 0)
-		current_turn = "enemy"
-		if info:
-			info.text = "ENEMY'S TURN"
-		if player_turn_timer_label:
-			player_turn_timer_label.hide()
-		enemy_turn()
+		sync_turn.rpc("opponent")
 	else:
 		current_turn = "player"
 		player_defending = false
-		_options_menu.show()
+		sync_turn.rpc("player")
+
+@rpc("any_peer", "call_local", "reliable")
+func sync_turn(turn: String) -> void:
+	"""Synchronize whose turn it is across all players"""
+	current_turn = turn
+	
+	if current_turn == "player":
 		if info:
-			info.text = "PLAYER'S TURN"
+			info.text = "YOUR TURN"
+		_options_menu.show()
+		player_defending = false
 		
-		# Set timer based on difficulty
-		match bot_difficulty:
-			0:  # Easy - no timer
-				player_turn_max_time = 0.0
-			1:  # Normal - 35 seconds
-				player_turn_max_time = 35.0
-			2:  # Hard - 25 seconds
-				player_turn_max_time = 25.0
-			_:
-				player_turn_max_time = 35.0
-		
-		# Start player turn timer
-		player_timeout_triggered = false
-		player_turn_time = player_turn_max_time
-		if player_turn_timer_label and player_turn_max_time > 0:
-			player_turn_timer_label.show()
-		
+		# Reset cooldowns display
 		magic_button.disabled = (magic_cooldown > 0)
 		ultimate_button.disabled = (ultimate_cooldown > 0)
 		
+		# Start player turn timer
+		player_timeout_triggered = false
+		player_turn_max_time = 35.0
+		player_turn_time = player_turn_max_time
+		if player_turn_timer_label:
+			player_turn_timer_label.show()
+		
 		_options_menu.button_focus(0)
-
-func enemy_turn() -> void:
-	if not is_inside_tree(): return
-	# Wait 2 seconds before attacking
-	await get_tree().create_timer(2.0).timeout
-	if not is_inside_tree(): return
-	
-	# Enemy chooses an action based on difficulty
-	var enemy_action = "fight"
-	if randf() > 0.5:
-		enemy_action = "magic"
-	
-	# Enemy answers question with accuracy based on difficulty
-	var is_correct = _enemy_answer_correct(bot_difficulty, enemy_action)
-	
-	# Display result in question info label
-	if question_info:
-		if is_correct:
-			question_info.text = "ENEMY GOT IT RIGHT"
-		else:
-			question_info.text = "ENEMY GOT IT WRONG"
-		question_info.show()
-		await get_tree().create_timer(2.0).timeout
-		question_info.hide()
-	
-	var damage = 0
-	if is_correct:
-		match enemy_action:
-			"fight":
-				damage = 10
-			"magic":
-				damage = 15
 	else:
-		# Enemy gets question wrong, minimal/no damage
-		damage = 0
-	
-	if player_defending:
-		damage *= 0.75
-	
-	player_health_bar.health -= damage
-	if not check_victory():
-		switch_turn()
-
-func _enemy_answer_correct(difficulty: int, action: String) -> bool:
-	# Based on difficulty, determine if enemy answers correctly
-	# 0 = easy (often wrong), 1 = normal (occasionally wrong), 2 = hard (never wrong)
-	match difficulty:
-		0:  # Easy - enemy gets it wrong 70% of the time
-			return randf() > 0.6
-		1:  # Normal - enemy gets it wrong 40% of the time
-			return randf() > 0.4
-		2:  # Hard - enemy never gets it wrong
-			return true
-		_:  # Default to normal
-			return randf() > 0.4
+		if info:
+			info.text = "OPPONENT'S TURN"
+		_options_menu.hide()
+		if player_turn_timer_label:
+			player_turn_timer_label.hide()
 
 func lose_turn() -> void:
-	# Player loses their turn without taking action
+	"""Player loses their turn without taking action"""
 	_options_menu.hide()
 	python_game_controller.hide()
-	# Enemy still gets their turn
+	# Switch to opponent's turn
 	switch_turn()
