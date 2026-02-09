@@ -8,6 +8,9 @@ var peer = ENetMultiplayerPeer.new()
 @export var player_field_scene: PackedScene
 @export var opponent_field_scene: PackedScene
 
+var player_scene = null
+var opponent_scene = null
+
 func _on_host_pressed() -> void:
 	disable_buttons()
 	
@@ -17,7 +20,7 @@ func _on_host_pressed() -> void:
 	
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	
-	var player_scene = player_field_scene.instantiate()
+	player_scene = player_field_scene.instantiate()
 	add_child(player_scene)
 
 func _on_join_pressed() -> void:
@@ -27,14 +30,21 @@ func _on_join_pressed() -> void:
 	
 	multiplayer.multiplayer_peer = peer
 	
-	var player_scene = player_field_scene.instantiate()
+	multiplayer.peer_connected.connect(_on_peer_connected)
+	
+	player_scene = player_field_scene.instantiate()
 	add_child(player_scene)
 	
-	var opponent_scene = opponent_field_scene.instantiate()
+	opponent_scene = opponent_field_scene.instantiate()
 	add_child(opponent_scene)
 
 func _on_peer_connected(peer_id):
 	print("player joined")
+	
+	# If we're the host and no opponent scene yet, create it
+	if multiplayer.is_server() and opponent_scene == null:
+		opponent_scene = opponent_field_scene.instantiate()
+		add_child(opponent_scene)
 
 func disable_buttons():
 	$UI/Multiplayer/VBoxContainer/Host.disabled = true
