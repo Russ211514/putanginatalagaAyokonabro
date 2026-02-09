@@ -3,6 +3,7 @@ extends Node2D
 @onready var back_button = $UI/Multiplayer/Back
 @onready var peer: EOSGMultiplayerPeer = EOSGMultiplayerPeer.new()
 @onready var display: Label = $MessageDisplay
+@onready var play: Button = $UI/Play
 
 @export var game_scene: PackedScene
 
@@ -58,11 +59,6 @@ func _ready() -> void:
 	
 	await HAuth.login_anonymous_async("User")
 	EosSetup = true
-	back_button.visible = true
-	
-	peer.peer_connected.connect(_on_peer_connected)
-	peer.peer_disconnected.connect(_on_peer_disconnected)
-	findMatch()
 	back_button.visible = true
 	
 func _on_logging_interface_callback(msg) -> void:
@@ -168,8 +164,9 @@ func _on_peer_connected(peer_id: int) -> void:
 	display.text = "Player %d connected" % peer_id
 	print("Player %d connected" % peer_id)
 	if(is_server):
-		$UI/Play.visible = true
 		peer_user_id = peer_id
+		# Automatically start the game when a player connects
+		start_game.rpc()
 
 func _on_peer_disconnected(peer_id: int) -> void:
 	display.text = "Player %d disconnected" % peer_id
