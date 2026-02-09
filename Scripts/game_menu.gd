@@ -99,7 +99,6 @@ func _on_connect_login_callback(data: Dictionary) -> void:
 	print_rich("[b]Login successfull[/b]: local_user_id=", data.local_user_id)
 	local_user_id = data.local_user_id
 	HAuth.product_user_id = local_user_id
-	findMatch()
 	
 #LOBBY CREATION CODE
 #-----------------------------------#
