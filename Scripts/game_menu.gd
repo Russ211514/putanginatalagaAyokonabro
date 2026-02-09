@@ -188,4 +188,4 @@ func _on_host_pressed() -> void:
 	create_lobby()
 
 func _on_join_pressed() -> void:
-	search_lobbies()
+	await search_lobbies()
