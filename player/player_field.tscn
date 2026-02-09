@@ -1,5 +1,6 @@
 [gd_scene format=3 uid="uid://dwj6kpowlgoa3"]
 
+[ext_resource type="Script" uid="uid://cppkgw8ihxmac" path="res://Scripts/battle_manager.gd" id="1_ap2yp"]
 [ext_resource type="Script" uid="uid://b4h7jgw5xhajg" path="res://Scripts/background_sprite.gd" id="1_it8ot"]
 [ext_resource type="Theme" uid="uid://2q3vbk6bmh2r" path="res://Themes/default_theme.tres" id="2_ap2yp"]
 [ext_resource type="PackedScene" uid="uid://cvj375674d1g6" path="res://Scenes/window_default.tscn" id="3_himw8"]
@@ -13,29 +14,30 @@
 font = ExtResource("4_av5ug")
 font_size = 25
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_25lwp"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_himw8"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_br1ex"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_av5ug"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_6bnkv"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_g4qxc"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_p2qw0"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_0g3m5"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_vt0wx"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bmf6l"]
 
 [sub_resource type="Theme" id="Theme_0h34h"]
 Button/font_sizes/font_size = 40
-Button/styles/disabled = SubResource("StyleBoxEmpty_25lwp")
-Button/styles/focus = SubResource("StyleBoxEmpty_br1ex")
-Button/styles/hover = SubResource("StyleBoxEmpty_6bnkv")
-Button/styles/normal = SubResource("StyleBoxEmpty_p2qw0")
-Button/styles/pressed = SubResource("StyleBoxEmpty_vt0wx")
+Button/styles/disabled = SubResource("StyleBoxEmpty_himw8")
+Button/styles/focus = SubResource("StyleBoxEmpty_av5ug")
+Button/styles/hover = SubResource("StyleBoxEmpty_g4qxc")
+Button/styles/normal = SubResource("StyleBoxEmpty_0g3m5")
+Button/styles/pressed = SubResource("StyleBoxEmpty_bmf6l")
 
 [node name="PlayerField" type="Node2D" unique_id=1690190793]
+script = ExtResource("1_ap2yp")
 
 [node name="Background_Sprite" type="Sprite2D" parent="." unique_id=49641371]
-position = Vector2(961.6667, 539.5)
-scale = Vector2(5.983333, 5.983333)
+position = Vector2(653.67, 536.67)
+scale = Vector2(6, 6)
 script = ExtResource("1_it8ot")
 
 [node name="BattleLayout" type="CanvasLayer" parent="." unique_id=765686137]

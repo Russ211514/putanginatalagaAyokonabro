@@ -4,21 +4,29 @@ class_name BattleManager
 # UI References
 @onready var player_health_label = get_node_or_null("PlayerHealthLabel")
 @onready var opponent_health_label = get_node_or_null("OpponentHealthLabel")
-@onready var player_healthbar = get_node_or_null("PlayerHealthBar")
+@onready var player_healthbar = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/HealthBar
 @onready var opponent_healthbar = get_node_or_null("OpponentHealthBar")
-@onready var turn_label = get_node_or_null("TurnLabel")
-@onready var timer_label = get_node_or_null("TimerLabel")
+@onready var turn_label: Label = $BattleLayout/Info
+@onready var timer_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/PlayerTurnTimerLabel
+@onready var lose: Label = $BattleLayout/Lose
+@onready var win: Label = $BattleLayout/Win
+@onready var questions: Control = $BattleLayout/Control
+@onready var question_info: Label = $BattleLayout/QuestionInfo
+@onready var options_menu: Menu = $BattleLayout/Battle/Options/Options
+
 
 # Action Buttons
-@onready var fight_button = get_node_or_null("Actions/FightButton")
-@onready var magic_button = get_node_or_null("Actions/MagicButton")
-@onready var defend_button = get_node_or_null("Actions/DefendButton")
-@onready var ultimate_button = get_node_or_null("Actions/UltimateButton")
+@onready var fight_button = $BattleLayout/Battle/Options/Options/Fight
+@onready var magic_button = $BattleLayout/Battle/Options/Options/Magic
+@onready var defend_button = $BattleLayout/Battle/Options/Options/Defend
+@onready var ultimate_button = $BattleLayout/Battle/Options/Options/Ultimate
+
 
 # Cooldown Labels
-@onready var magic_cooldown_label = get_node_or_null("Cooldowns/MagicCooldown")
-@onready var defend_cooldown_label = get_node_or_null("Cooldowns/DefendCooldown")
-@onready var ultimate_cooldown_label = get_node_or_null("Cooldowns/UltimateCooldown")
+@onready var magic_cooldown_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/MagicCooldownLabel
+@onready var ultimate_cooldown_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/UltimateCooldownLabel
+@onready var defend_cooldown_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/DefendCooldownLabel
+
 
 # Combat Stats
 var player_health: int = 150
@@ -33,10 +41,12 @@ var defend_cooldown: float = 0.0
 var ultimate_cooldown: float = 0.0
 var turn_timer: float = 20.0
 var turn_time_remaining: float = 20.0
+var player_timeout_triggered: bool = false
 
 # Defend Status (3 bars)
 var player_defend_bars: int = 3
 var opponent_defend_bars: int = 3
+var player_defending = false
 
 # Action Damages
 const FIGHT_DAMAGE = 10
@@ -54,6 +64,10 @@ func _ready() -> void:
 	if has_meta("IsServer"):
 		is_server = get_meta("IsServer")
 	
+	lose.visible = false
+	win.visible = false
+	questions.hide()
+	
 	# Initialize UI
 	update_health_display()
 	
@@ -67,6 +81,11 @@ func _ready() -> void:
 	if ultimate_button:
 		ultimate_button.pressed.connect(_on_ultimate_pressed)
 	
+	if questions and questions.html_question:
+		for button in questions.html_question.get_children():
+			if button is Button:
+				button.pressed.connect(_on_answer_button_pressed.bind(button))
+	
 	# Start the game
 	if is_server:
 		# Server decides who goes first
@@ -76,93 +95,110 @@ func _ready() -> void:
 	update_turn_display()
 
 func _process(delta: float) -> void:
-	# Update cooldowns
 	if magic_cooldown > 0:
 		magic_cooldown -= delta
+		magic_cooldown_label.text = "Magic: %.1f" % magic_cooldown
+		magic_cooldown_label.show()
 		if magic_cooldown <= 0:
 			magic_cooldown = 0
-		update_cooldown_display()
-	
-	if defend_cooldown > 0:
-		defend_cooldown -= delta
-		if defend_cooldown <= 0:
-			defend_cooldown = 0
-		update_cooldown_display()
+			magic_cooldown_label.hide()
+			if current_turn == "player" and options_menu.visible:
+				magic_button.disabled = false
+	else:
+		magic_cooldown_label.hide()
 	
 	if ultimate_cooldown > 0:
 		ultimate_cooldown -= delta
+		ultimate_cooldown_label.text = "Ult: %.1f" % ultimate_cooldown
+		ultimate_cooldown_label.show()
 		if ultimate_cooldown <= 0:
 			ultimate_cooldown = 0
-		update_cooldown_display()
+			ultimate_cooldown_label.hide()
+			if current_turn == "player" and options_menu.visible:
+				ultimate_button.disabled = false
+	else:
+		ultimate_cooldown_label.hide()
 	
-	# Update turn timer
-	if current_turn == "player":
-		turn_time_remaining -= delta
-		if turn_time_remaining <= 0:
-			turn_time_remaining = 0
-			# Time ran out, lose turn
-			lose_turn()
-		update_timer_display()
+	if defend_cooldown > 0:
+		defend_cooldown -= delta
+		defend_cooldown_label.text = "Defend: %.1f" % defend_cooldown
+		defend_cooldown_label.show()
+		if defend_cooldown <= 0:
+			defend_cooldown = 0
+			defend_cooldown_label.hide()
+			if current_turn == "player" and options_menu.visible:
+				defend_button.disabled = false
+	else:
+		defend_cooldown_label.hide()
+	
+	if turn_timer > 0 and current_turn == "player":
+		turn_timer -= delta
+		if turn_timer:
+			timer_label.text = "Time: %.0fs" % max(0, turn_timer)
+			timer_label.show()
+		if turn_timer <= 0 and not player_timeout_triggered:
+			turn_timer = 0
+			player_timeout_triggered = true
+			if turn_timer:
+				timer_label.hide()
+			# Show timeout message
+			if question_info:
+				question_info.text = "TIME RAN OUT"
+				question_info.show()
+				# Wait 2 seconds then lose turn
+				await get_tree().create_timer(2.0).timeout
+				question_info.hide()
+				lose_turn()
+	elif current_turn == "enemy":
+		if turn_timer:
+			timer_label.hide()
+
+func _on_options_button_pressed(button: BaseButton) -> void:
+	match button.text:
+		"Fight":
+			pass
 
 func _on_fight_pressed() -> void:
-	if current_turn != "player":
-		return
 	current_action = "fight"
-	execute_player_action.rpc("fight", true)
-	if not check_victory():
-		switch_turn()
+	start_question(Enum.Difficulty.EASY)
 
 func _on_magic_pressed() -> void:
-	if current_turn != "player":
-		return
-	if magic_cooldown > 0:
-		print("Magic is on cooldown")
-		return
 	current_action = "magic"
-	magic_cooldown = MAGIC_COOLDOWN_TIME
-	execute_player_action.rpc("magic", true)
-	if not check_victory():
-		switch_turn()
+	start_question(Enum.Difficulty.MEDIUM)
 
 func _on_defend_pressed() -> void:
-	if current_turn != "player":
-		return
-	if defend_cooldown > 0:
-		print("Defend is on cooldown")
-		return
 	current_action = "defend"
-	player_defend_bars = DEFEND_BARS
-	defend_cooldown = DEFEND_COOLDOWN_TIME
-	
-	# Send action to opponent immediately (no question for defend)
-	execute_player_action.rpc("defend", true)
+	player_defending = true
+	defend_cooldown = 15.0
 	switch_turn()
 
 func _on_ultimate_pressed() -> void:
-	if current_turn != "player":
-		return
-	if ultimate_cooldown > 0:
-		print("Ultimate is on cooldown")
-		return
 	current_action = "ultimate"
-	ultimate_cooldown = ULTIMATE_COOLDOWN_TIME
-	execute_player_action.rpc("ultimate", true)
-	if not check_victory():
-		switch_turn()
+	start_question(Enum.Difficulty.HARD)
+
+func start_question(difficulty: Enum.Difficulty) -> void:
+	options_menu.hide()
+	questions.load_question(difficulty)
+	
+	# Enable buttons and reset colors
+	for button in questions.html_question.get_children():
+		if button is Button:
+			button.disabled = false
+			button.modulate = Color.WHITE
+			
+	questions.show()
+
 
 @rpc("any_peer", "call_local", "reliable")
-func execute_player_action(action: String, is_correct: bool) -> void:
-	"""Execute the player's action and apply damage"""
+func perform_action():
 	var damage = 0
-	
-	match action:
+	match current_action:
 		"fight":
-			damage = FIGHT_DAMAGE
+			damage = 10
 		"magic":
-			damage = MAGIC_DAMAGE
+			damage = 15
 		"ultimate":
-			damage = ULTIMATE_DAMAGE
-	
+			damage = 25
 	# Apply damage considering opponent's defend status
 	if opponent_defend_bars > 0:
 		# Defend reduces damage by 100%
@@ -173,11 +209,60 @@ func execute_player_action(action: String, is_correct: bool) -> void:
 	update_health_display()
 	check_victory()
 
+func _on_answer_button_pressed(button: Button) -> void:
+	# Check if the answer is correct
+	var current_question = questions.current_quiz
+	var is_correct = (button.text == current_question.correct)
+	
+	# Disable all buttons to prevent multiple clicks
+	for btn in questions.html_question.get_children():
+		if btn is Button:
+			btn.disabled = true
+	
+	# Visual feedback
+	if is_correct:
+		button.modulate = questions.color_right
+	else:
+		button.modulate = questions.color_wrong
+	
+	# Wait a moment for visual feedback
+	await get_tree().create_timer(1.0).timeout
+	
+	# Hide question UI
+	questions.hide()
+	
+	# Handle result
+	if is_correct:
+		# Set cooldown for magic and ultimate actions
+		if current_action == "magic":
+			magic_cooldown = 20.0
+		elif current_action == "ultimate":
+			ultimate_cooldown = 60.0
+		
+		if not perform_action():
+			switch_turn()
+	else:
+		if current_action == "magic":
+			magic_cooldown = 20.0
+		elif current_action == "ultimate":
+			ultimate_cooldown = 60.0
+		lose_turn()
+
 func switch_turn() -> void:
 	"""Switch turn to opponent"""
-	current_turn = "opponent"
-	turn_time_remaining = turn_timer
-	player_defend_bars = 0  # Reset defend status when turn changes
+	if current_turn == "player":
+		defend_button.disabled = (defend_cooldown > 0)
+		current_turn = "enemy"
+		if turn_label:
+			turn_label.text = "ENEMY'S TURN"
+		if turn_label:
+			turn_label.hide()
+	else:
+		current_turn = "player"
+		player_defending = false
+		options_menu.show()
+		if turn_label:
+			turn_label.text = "PLAYER'S TURN"
 	
 	if is_server:
 		sync_game_state.rpc("opponent")
@@ -197,7 +282,6 @@ func sync_game_state(new_turn: String) -> void:
 	current_turn = new_turn
 	turn_time_remaining = turn_timer
 	update_turn_display()
-	update_buttons()
 
 func update_health_display() -> void:
 	"""Update health labels and bars"""
@@ -220,49 +304,12 @@ func update_turn_display() -> void:
 			turn_label.text = "YOUR TURN"
 		else:
 			turn_label.text = "OPPONENT'S TURN"
-	
-	update_buttons()
+			switch_turn()
 
 func update_timer_display() -> void:
 	"""Update timer display"""
 	if timer_label:
 		timer_label.text = "%.1f" % max(0, turn_time_remaining)
-
-func update_cooldown_display() -> void:
-	"""Update cooldown displays"""
-	if magic_cooldown_label:
-		if magic_cooldown > 0:
-			magic_cooldown_label.text = "Magic: %.1f" % magic_cooldown
-			magic_cooldown_label.visible = true
-		else:
-			magic_cooldown_label.visible = false
-	
-	if defend_cooldown_label:
-		if defend_cooldown > 0:
-			defend_cooldown_label.text = "Defend: %.1f" % defend_cooldown
-			defend_cooldown_label.visible = true
-		else:
-			defend_cooldown_label.visible = false
-	
-	if ultimate_cooldown_label:
-		if ultimate_cooldown > 0:
-			ultimate_cooldown_label.text = "Ultimate: %.1f" % ultimate_cooldown
-			ultimate_cooldown_label.visible = true
-		else:
-			ultimate_cooldown_label.visible = false
-
-func update_buttons() -> void:
-	"""Enable/disable buttons based on game state"""
-	var buttons_enabled = (current_turn == "player")
-	
-	if fight_button:
-		fight_button.disabled = not buttons_enabled
-	if magic_button:
-		magic_button.disabled = not buttons_enabled or magic_cooldown > 0
-	if defend_button:
-		defend_button.disabled = not buttons_enabled or defend_cooldown > 0
-	if ultimate_button:
-		ultimate_button.disabled = not buttons_enabled or ultimate_cooldown > 0
 
 func check_victory() -> bool:
 	"""Check if either player has won"""
