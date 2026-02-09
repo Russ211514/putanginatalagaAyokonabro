@@ -8,7 +8,12 @@ var backgrounds = [
 ]
 
 func _ready():
-	# Generate random index
-	var random_index = randi() % backgrounds.size()
-	# Set the texture
-	self.texture = backgrounds[random_index]
+	# Wait for multiplayer battle to set the background
+	pass
+
+@rpc("any_peer", "call_local", "reliable")
+func set_background(index: int) -> void:
+	"""Set background by index - synced across all players"""
+	if index >= 0 and index < backgrounds.size():
+		self.texture = backgrounds[index]
+		print("[BackgroundSprite] Set background to index: ", index)

@@ -25,7 +25,6 @@ config/features=PackedStringArray("4.6", "Forward Plus")
 
 [autoload]
 
-Multiplayer="*res://Scripts/multiplayer.gd"
 Enums="*res://Scripts/enum/enums.gd"
 LevelCore="*res://Scripts/level_core.gd"
 GDSync="*res://addons/GD-Sync/MultiplayerClient.gd"
@@ -35,17 +34,6 @@ JavaGameController="uid://d33ix37tqbja"
 BattleQuestions="*uid://dwxjlf7xx3n81"
 DataSave="*uid://3yco6520dep6"
 HtmlBattleController="*uid://b1dxjb7xuykhk"
-EOSGRuntime="*uid://7saywdx0ipep"
-HPlatform="*uid://yl2muvqrdiud"
-HAuth="*uid://786t1jiowvvg"
-HAchievements="*uid://bis404dty5u5c"
-HFriends="*uid://uumqbey8ji5t"
-HStats="*uid://dbckdip83oone"
-HLeaderboards="*uid://b06khhf20mplm"
-HLobbies="*uid://6iqvm33q0tb1"
-HP2P="*uid://u6ae5fpm6l8q"
-HSessions="*uid://bieh2rxxahuu2"
-EosManager="*uid://cuv8swer4sfib"
 
 [display]
 
