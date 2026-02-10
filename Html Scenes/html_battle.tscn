@@ -315,5 +315,4 @@ text = "ENEMY GOT IT RIGHT"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseMenu" parent="." unique_id=836059466 instance=ExtResource("11_ivrce")]
-layout_mode = 1
+[node name="PauseMenu" parent="BattleLayout" unique_id=836059466 instance=ExtResource("11_ivrce")]

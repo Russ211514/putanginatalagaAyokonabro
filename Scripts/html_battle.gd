@@ -14,12 +14,15 @@ extends Control
 @onready var player_turn_timer_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/PlayerTurnTimerLabel
 @onready var info: Label = $BattleLayout/Info
 @onready var question_info: Label = $BattleLayout/QuestionInfo
-@onready var pause_menu: Control = $PauseMenu
+@onready var pause_menu: Control = $BattleLayout/PauseMenu
 
 @onready var magic_button = $BattleLayout/Battle/Options/Options/Magic
 @onready var ultimate_button = $BattleLayout/Battle/Options/Options/Ultimate
 @onready var fight_button = $BattleLayout/Battle/Options/Options/Fight
 @onready var defend_button = $BattleLayout/Battle/Options/Options/Defend
+
+@onready var pause_menu_resume_button = $PauseMenu/MarginContainer/VBoxContainer/Resume
+@onready var pause_menu_leave_button = $PauseMenu/MarginContainer/VBoxContainer/Leave
 
 var magic_cooldown: float = 0.0
 var ultimate_cooldown: float = 0.0
@@ -50,7 +53,7 @@ func _ready() -> void:
 	win.visible = false
 	html_game_controller.visible = false
 	
-	pause_menu.visible = false
+	pause_menu.hide()
 	
 	_options_menu.button_focus(0)
 	player_health_bar.init_health(150)
@@ -61,6 +64,7 @@ func _ready() -> void:
 	magic_button.pressed.connect(_on_magic_pressed)
 	ultimate_button.pressed.connect(_on_ultimate_pressed)
 	defend_button.pressed.connect(_on_defend_pressed)
+	
 	
 	# Connect answer buttons
 	if html_game_controller and html_game_controller.html_question:
@@ -153,15 +157,17 @@ func _process(delta):
 			player_turn_timer_label.hide()
 	
 	if Input.is_action_just_pressed("pause"):
-		disable_option_menu_buttons()
-		pause_menu.visible = true
 		PauseMenu()
 
 func PauseMenu():
 	if paused:
+		# Resume the game
 		pause_menu.hide()
 		Engine.time_scale = 1
+		enable_option_menu_buttons()
 	else:
+		# Pause the game
+		disable_option_menu_buttons()
 		pause_menu.show()
 		Engine.time_scale = 0
 	
@@ -171,6 +177,18 @@ func disable_option_menu_buttons():
 	for child in _options_menu.get_children():
 		if child is Button:
 			child.disabled = true
+
+func enable_option_menu_buttons():
+	if _options_menu.visible:
+		for child in _options_menu.get_children():
+			if child is Button:
+				child.disabled = false
+
+func _on_pause_menu_resume() -> void:
+	PauseMenu()
+
+func _on_pause_menu_leave() -> void:
+	get_tree().change_scene_to_file("res://Scenes/offline selection.tscn")
 
 func _on_options_button_pressed(button: BaseButton) -> void:
 	match button.text:
