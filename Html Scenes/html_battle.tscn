@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://player/html_player.tscn" id="8_1ya06"]
 [ext_resource type="PackedScene" uid="uid://cu4th8f6oig" path="res://enemy/html_enemy.tscn" id="9_jblth"]
 [ext_resource type="PackedScene" uid="uid://d4kh5lhm8k6ck" path="res://Html Scenes/html_question_battle.tscn" id="10_1ya06"]
+[ext_resource type="PackedScene" uid="uid://b0ay65rdnltk5" path="res://Scenes/pause_menu.tscn" id="11_ivrce"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_hfshi"]
 font = ExtResource("4_o2ddx")
@@ -313,3 +314,6 @@ theme_override_font_sizes/font_size = 60
 text = "ENEMY GOT IT RIGHT"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="PauseMenu" parent="." unique_id=836059466 instance=ExtResource("11_ivrce")]
+layout_mode = 1

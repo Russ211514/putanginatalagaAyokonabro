@@ -14,6 +14,7 @@ extends Control
 @onready var player_turn_timer_label: Label = $BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer/PlayerTurnTimerLabel
 @onready var info: Label = $BattleLayout/Info
 @onready var question_info: Label = $BattleLayout/QuestionInfo
+@onready var pause_menu: Control = $PauseMenu
 
 @onready var magic_button = $BattleLayout/Battle/Options/Options/Magic
 @onready var ultimate_button = $BattleLayout/Battle/Options/Options/Ultimate
@@ -32,6 +33,8 @@ var player_defending = false
 var current_action = ""
 var bot_difficulty: int = 1  # 0 = easy, 1 = normal, 2 = hard
 
+var paused = false
+
 func _ready() -> void:
 	# Capture bot difficulty from parent scene
 	if has_meta("BotDifficulty"):
@@ -46,6 +49,8 @@ func _ready() -> void:
 	lose.visible = false
 	win.visible = false
 	html_game_controller.visible = false
+	
+	pause_menu.visible = false
 	
 	_options_menu.button_focus(0)
 	player_health_bar.init_health(150)
@@ -88,7 +93,7 @@ func _ready() -> void:
 		if info:
 			info.text = "PLAYER'S TURN"
 
-func _process(delta: float) -> void:
+func _process(delta):
 	if magic_cooldown > 0:
 		magic_cooldown -= delta
 		magic_cooldown_label.text = "Magic: %.1f" % magic_cooldown
@@ -146,6 +151,26 @@ func _process(delta: float) -> void:
 	elif current_turn == "enemy":
 		if player_turn_timer_label:
 			player_turn_timer_label.hide()
+	
+	if Input.is_action_just_pressed("pause"):
+		disable_option_menu_buttons()
+		pause_menu.visible = true
+		PauseMenu()
+
+func PauseMenu():
+	if paused:
+		pause_menu.hide()
+		Engine.time_scale = 1
+	else:
+		pause_menu.show()
+		Engine.time_scale = 0
+	
+	paused = !paused
+
+func disable_option_menu_buttons():
+	for child in _options_menu.get_children():
+		if child is Button:
+			child.disabled = true
 
 func _on_options_button_pressed(button: BaseButton) -> void:
 	match button.text:
