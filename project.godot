@@ -34,6 +34,7 @@ JavaGameController="uid://d33ix37tqbja"
 BattleQuestions="*uid://dwxjlf7xx3n81"
 DataSave="*uid://3yco6520dep6"
 HtmlBattleController="*uid://b1dxjb7xuykhk"
+MultiplayerManager="*uid://detn7py7a64j"
 
 [display]
 
@@ -41,6 +42,10 @@ window/size/viewport_width=1920
 window/size/viewport_height=1080
 window/size/mode=3
 window/stretch/mode="viewport"
+
+[dotnet]
+
+project/assembly_name="Code Arena Combat Main"
 
 [editor_plugins]
 
