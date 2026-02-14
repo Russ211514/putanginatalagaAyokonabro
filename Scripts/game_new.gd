@@ -1,23 +1,24 @@
 extends Node
 
+# Networking
+var multiplayer_peer = ENetMultiplayerPeer.new()
 const PORT = 9999
 const ADDRESS = "localhost"
 
-var my_peer_id: int = 0
-var is_host: bool = false
 var room_code: String = ""
+var is_host: bool = false
+var my_peer_id: int = 0
 var opponent_peer_id: int = 0
 
-var multiplayer_peer = ENetMultiplayerPeer.new()
-
+# UI References
+@onready var room_label = $RoomLabel
+@onready var network_info = $NetworkInfo
+@onready var ui_panel = $UI
+@onready var room_code_input = $UI/Multiplayer/OIDinput
+@onready var copy_code_button = $UI/Multiplayer/CopyOID
 @onready var host_button = $UI/Multiplayer/VBoxContainer/Host
 @onready var join_button = $UI/Multiplayer/VBoxContainer/Join
 @onready var back_button = $UI/Multiplayer/Back
-@onready var room_label = $RoomLabel
-@onready var room_code_input = $UI/Multiplayer/OIDinput
-@onready var network_info = $UI/Multiplayer/OnlineID
-@onready var copy_code_button = $UI/Multiplayer/CopyOID
-@onready var ui_panel = $UI
 
 func _ready() -> void:
 	my_peer_id = multiplayer.get_unique_id()
@@ -89,10 +90,8 @@ func _on_peer_connected(peer_id: int) -> void:
 	if is_host and opponent_peer_id == 0:
 		opponent_peer_id = peer_id
 		print("Host: Opponent connected with peer_id: ", peer_id)
-		print("Host: Current peers: ", multiplayer.get_peers())
 		# Start the battle - both peers transition to game_battle.tscn
 		await get_tree().create_timer(1.0).timeout
-		print("Host: Calling transition_to_battle.rpc()")
 		transition_to_battle.rpc()
 
 func _on_peer_disconnected(peer_id: int) -> void:
@@ -102,5 +101,4 @@ func _on_peer_disconnected(peer_id: int) -> void:
 @rpc("any_peer", "call_local")
 func transition_to_battle() -> void:
 	# Both peers transition to game_battle.tscn
-	print("Transitioning to battle scene. Peer ID: ", my_peer_id)
 	get_tree().change_scene_to_file("res://Scenes/game_battle.tscn")
