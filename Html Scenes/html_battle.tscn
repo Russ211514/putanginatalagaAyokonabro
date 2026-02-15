@@ -45,7 +45,7 @@ script = ExtResource("1_jblth")
 
 [node name="Background_Sprite" type="Sprite2D" parent="." unique_id=1188463556]
 position = Vector2(961.6667, 539.5)
-scale = Vector2(5.983333, 5.983333)
+scale = Vector2(6, 6)
 script = ExtResource("1_iufl6")
 
 [node name="BattleLayout" type="CanvasLayer" parent="." unique_id=432606559]

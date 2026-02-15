@@ -1,36 +1,108 @@
 [gd_scene format=3 uid="uid://oxh800noswjt"]
 
-[ext_resource type="Script" path="res://Scripts/game_battle_coordinator.gd" id="1_8d2i4"]
 [ext_resource type="Script" uid="uid://b4h7jgw5xhajg" path="res://Scripts/background_sprite.gd" id="2_8d2i4"]
 [ext_resource type="Theme" uid="uid://2q3vbk6bmh2r" path="res://Themes/default_theme.tres" id="3_8d2i4"]
 [ext_resource type="PackedScene" uid="uid://cvj375674d1g6" path="res://Scenes/window_default.tscn" id="4_8d2i4"]
 [ext_resource type="FontFile" uid="uid://ctac5wch5ukxl" path="res://Art Assets/VCR_OSD_MONO_1.001.ttf" id="5_8d2i4"]
 [ext_resource type="PackedScene" uid="uid://cjbitdt03r8sc" path="res://Scenes/health_bar.tscn" id="6_8d2i4"]
+[ext_resource type="PackedScene" uid="uid://rlk8ts148a0u" path="res://player/html_player.tscn" id="7_7x71r"]
 [ext_resource type="Script" uid="uid://hwl1a3d4oayi" path="res://Scripts/options.gd" id="7_8d2i4"]
-[ext_resource type="Script" uid="uid://cvrjrxf10wkt" path="res://Scripts/PlayerQuestions.gd" id="8_8d2i4"]
-[ext_resource type="Resource" uid="uid://cdqxhyvxq4mv6" path="res://Scripts/Resource/varied/themes/HtmlBattleTheme.tres" id="9_8d2i4"]
+[ext_resource type="PackedScene" uid="uid://cu4th8f6oig" path="res://enemy/html_enemy.tscn" id="8_6l16w"]
+[ext_resource type="PackedScene" uid="uid://d4kh5lhm8k6ck" path="res://Html Scenes/html_question_battle.tscn" id="9_jf7jn"]
+[ext_resource type="PackedScene" uid="uid://b0ay65rdnltk5" path="res://Scenes/pause_menu.tscn" id="10_a205f"]
 
-[sub_resource type="LabelSettings" id="LabelSettings_8d2i4"]
+[sub_resource type="GDScript" id="GDScript_x03gj"]
+script/source = "extends Control
+
+# Signals for turn state changes
+signal turn_changed(new_turn: String)
+signal player_turn_started
+signal enemy_turn_started
+
+@onready var info: Label = $BattleLayout/Info
+
+var current_turn: String = \"player\"
+var bot_difficulty: int = 1  # 0 = easy, 1 = normal, 2 = hard
+
+var paused = false
+
+func _ready() -> void:
+	# Capture bot difficulty from parent scene
+	if has_meta(\"BotDifficulty\"):
+		bot_difficulty = get_meta(\"BotDifficulty\")
+	
+	if info:
+		info.show()
+	
+	# Randomize starting turn
+	if randf() > 0.5:
+		current_turn = \"enemy\"
+		_start_enemy_turn()
+	else:
+		current_turn = \"player\"
+		_start_player_turn()
+
+## Switch turn from player to enemy or vice versa
+func switch_turn() -> void:
+	if current_turn == \"player\":
+		current_turn = \"enemy\"
+		_start_enemy_turn()
+	else:
+		current_turn = \"player\"
+		_start_player_turn()
+
+## Start player's turn - emit signal and update UI
+func _start_player_turn() -> void:
+	if info:
+		info.text = \"PLAYER'S TURN\"
+	turn_changed.emit(\"player\")
+	player_turn_started.emit()
+
+## Start enemy's turn - emit signal and update UI
+func _start_enemy_turn() -> void:
+	if info:
+		info.text = \"ENEMY'S TURN\"
+	turn_changed.emit(\"enemy\")
+	enemy_turn_started.emit()
+
+## Check if it's the player's turn
+func is_player_turn() -> bool:
+	return current_turn == \"player\"
+
+## Check if it's the enemy's turn
+func is_enemy_turn() -> bool:
+	return current_turn == \"enemy\"
+
+## Get the current turn
+func get_current_turn() -> String:
+	return current_turn
+
+## Get the bot difficulty
+func get_bot_difficulty() -> int:
+	return bot_difficulty
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_ibsfp"]
 font = ExtResource("5_8d2i4")
 font_size = 25
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8d2i4"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_ms847"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8d2i5"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_f4ggb"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8d2i6"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wb0gu"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8d2i7"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_84vmf"]
 
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8d2i8"]
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_xdap8"]
 
-[sub_resource type="Theme" id="Theme_8d2i4"]
+[sub_resource type="Theme" id="Theme_7w5d3"]
 Button/font_sizes/font_size = 40
-Button/styles/disabled = SubResource("StyleBoxEmpty_8d2i4")
-Button/styles/focus = SubResource("StyleBoxEmpty_8d2i5")
-Button/styles/hover = SubResource("StyleBoxEmpty_8d2i6")
-Button/styles/normal = SubResource("StyleBoxEmpty_8d2i7")
-Button/styles/pressed = SubResource("StyleBoxEmpty_8d2i8")
+Button/styles/disabled = SubResource("StyleBoxEmpty_ms847")
+Button/styles/focus = SubResource("StyleBoxEmpty_f4ggb")
+Button/styles/hover = SubResource("StyleBoxEmpty_wb0gu")
+Button/styles/normal = SubResource("StyleBoxEmpty_84vmf")
+Button/styles/pressed = SubResource("StyleBoxEmpty_xdap8")
 
 [node name="Game Battle" type="Control" unique_id=125036972]
 layout_mode = 3
@@ -39,26 +111,16 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_8d2i4")
+script = SubResource("GDScript_x03gj")
 
-[node name="Background_Sprite" type="Sprite2D" parent="." unique_id=1188463556]
+[node name="BattleLayout" type="CanvasLayer" parent="." unique_id=2115011377]
+
+[node name="Background_Sprite" type="Sprite2D" parent="BattleLayout" unique_id=1437225844]
 position = Vector2(961.6667, 539.5)
-scale = Vector2(5.983333, 5.983333)
+scale = Vector2(6, 6)
 script = ExtResource("2_8d2i4")
 
-[node name="SpawnPoint" type="Marker2D" parent="Background_Sprite" unique_id=1281371444]
-position = Vector2(307, 563)
-
-[node name="SpawnPoint2" type="Marker2D" parent="Background_Sprite" unique_id=1387414207]
-position = Vector2(1608, 563)
-
-[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="." unique_id=1281371445]
-_spawnable_scenes = PackedStringArray("uid://dcq8wnaiijaee")
-spawn_path = NodePath("..")
-
-[node name="BattleLayout" type="CanvasLayer" parent="." unique_id=432606559]
-
-[node name="Battle" type="Control" parent="BattleLayout" unique_id=1836120327]
+[node name="Battle" type="Control" parent="BattleLayout" unique_id=1654924168]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -68,7 +130,7 @@ grow_vertical = 2
 theme = ExtResource("3_8d2i4")
 metadata/_edit_use_anchors_ = true
 
-[node name="Bottom" type="HBoxContainer" parent="BattleLayout/Battle" unique_id=1185919253]
+[node name="Bottom" type="HBoxContainer" parent="BattleLayout/Battle" unique_id=835463703]
 custom_minimum_size = Vector2(870, 240)
 layout_mode = 1
 anchors_preset = 7
@@ -85,14 +147,14 @@ grow_vertical = 0
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="Enemy" parent="BattleLayout/Battle/Bottom" unique_id=855602714 instance=ExtResource("4_8d2i4")]
+[node name="Enemy" parent="BattleLayout/Battle/Bottom" unique_id=1717120480 instance=ExtResource("4_8d2i4")]
 layout_mode = 2
 patch_margin_left = 10
 patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 
-[node name="MarginContainer" type="MarginContainer" parent="BattleLayout/Battle/Bottom/Enemy" unique_id=806121642]
+[node name="MarginContainer" type="MarginContainer" parent="BattleLayout/Battle/Bottom/Enemy" unique_id=125817164]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -104,23 +166,22 @@ offset_bottom = -740.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BattleLayout/Battle/Bottom/Enemy/MarginContainer" unique_id=522911525]
+[node name="VBoxContainer" type="VBoxContainer" parent="BattleLayout/Battle/Bottom/Enemy/MarginContainer" unique_id=1380034177]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="BattleLayout/Battle/Bottom/Enemy/MarginContainer/VBoxContainer" unique_id=1385310593]
+[node name="Name" type="Label" parent="BattleLayout/Battle/Bottom/Enemy/MarginContainer/VBoxContainer" unique_id=587332067]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("5_8d2i4")
 theme_override_font_sizes/font_size = 40
-text = "OPPONENT"
+text = "ENEMY"
 horizontal_alignment = 2
 
 [node name="HealthBar" parent="BattleLayout/Battle/Bottom/Enemy/MarginContainer/VBoxContainer" unique_id=1586567242 instance=ExtResource("6_8d2i4")]
 layout_mode = 2
-value = 150.0
 show_percentage = true
 
-[node name="Player" parent="BattleLayout/Battle/Bottom" unique_id=1301334114 instance=ExtResource("4_8d2i4")]
+[node name="Player" parent="BattleLayout/Battle/Bottom" unique_id=1491260129 instance=ExtResource("4_8d2i4")]
 layout_mode = 2
 size_flags_stretch_ratio = 1.5
 patch_margin_left = 10
@@ -128,7 +189,7 @@ patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 
-[node name="MarginContainer" type="MarginContainer" parent="BattleLayout/Battle/Bottom/Player" unique_id=1489975070]
+[node name="MarginContainer" type="MarginContainer" parent="BattleLayout/Battle/Bottom/Player" unique_id=1117719186]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -140,41 +201,41 @@ offset_bottom = -737.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="BattleLayout/Battle/Bottom/Player/MarginContainer" unique_id=1340569006]
+[node name="VBoxContainer" type="VBoxContainer" parent="BattleLayout/Battle/Bottom/Player/MarginContainer" unique_id=2007735875]
 layout_mode = 2
 
-[node name="Name" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1540985690]
+[node name="Name" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1780656213]
 layout_mode = 2
 size_flags_vertical = 1
 theme_override_fonts/font = ExtResource("5_8d2i4")
 theme_override_font_sizes/font_size = 40
-text = "YOU"
+text = "PLAYER"
 
-[node name="HealthBar" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=183023833 instance=ExtResource("6_8d2i4")]
+[node name="HealthBar" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=536365432 instance=ExtResource("6_8d2i4")]
 layout_mode = 2
 value = 150.0
 show_percentage = true
 
-[node name="MagicCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=61217655]
+[node name="MagicCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1769793624]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
-label_settings = SubResource("LabelSettings_8d2i4")
+label_settings = SubResource("LabelSettings_ibsfp")
 
-[node name="UltimateCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1660538614]
-layout_mode = 2
-theme_override_font_sizes/font_size = 30
-
-[node name="DefendCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=269984699]
+[node name="UltimateCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1385828427]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 
-[node name="PlayerTurnTimerLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1234567891]
+[node name="DefendCooldownLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1476975334]
+layout_mode = 2
+theme_override_font_sizes/font_size = 30
+
+[node name="PlayerTurnTimerLabel" type="Label" parent="BattleLayout/Battle/Bottom/Player/MarginContainer/VBoxContainer" unique_id=1627890451]
 layout_mode = 2
 theme_override_font_sizes/font_size = 30
 text = "Time: 35s"
-label_settings = SubResource("LabelSettings_8d2i4")
+label_settings = SubResource("LabelSettings_ibsfp")
 
-[node name="Options" parent="BattleLayout/Battle" unique_id=1829402379 instance=ExtResource("4_8d2i4")]
+[node name="Options" parent="BattleLayout/Battle" unique_id=1737756703 instance=ExtResource("4_8d2i4")]
 custom_minimum_size = Vector2(240, 240)
 layout_mode = 0
 offset_left = 586.0
@@ -187,7 +248,7 @@ patch_margin_top = 10
 patch_margin_right = 10
 patch_margin_bottom = 10
 
-[node name="Options" type="VBoxContainer" parent="BattleLayout/Battle/Options" unique_id=774202889]
+[node name="Options" type="VBoxContainer" parent="BattleLayout/Battle/Options" unique_id=1611475217]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -197,121 +258,58 @@ grow_vertical = 2
 theme_override_constants/separation = 25
 script = ExtResource("7_8d2i4")
 
-[node name="Fight" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=1519493644]
+[node name="Fight" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=1956270848]
 layout_mode = 2
 focus_neighbor_bottom = NodePath("../Magic")
-theme = SubResource("Theme_8d2i4")
+theme = SubResource("Theme_7w5d3")
 text = "FIGHT"
 
-[node name="Magic" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=58129960]
+[node name="Magic" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=874810436]
 layout_mode = 2
 text = "MAGIC"
 
-[node name="Defend" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=682475961]
+[node name="Defend" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=650451185]
 layout_mode = 2
 text = "DEFEND"
 
-[node name="Ultimate" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=122854244]
+[node name="Ultimate" type="Button" parent="BattleLayout/Battle/Options/Options" unique_id=1209353473]
 layout_mode = 2
 text = "ULTIMATE"
 
-[node name="Control" type="Control" parent="BattleLayout" unique_id=818718884]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = ExtResource("8_8d2i4")
-quiz = ExtResource("9_8d2i4")
+[node name="Player" type="Control" parent="BattleLayout/Battle" unique_id=153476265]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("7_8d2i4")
 
-[node name="Question" type="VBoxContainer" parent="BattleLayout/Control" unique_id=1149126959]
-layout_mode = 1
+[node name="TextureButton" parent="BattleLayout/Battle/Player" unique_id=967598217 instance=ExtResource("7_7x71r")]
+layout_mode = 0
+offset_left = 154.0
+offset_top = 483.0
+offset_right = 203.0
+offset_bottom = 538.0
+
+[node name="Enemies" type="Control" parent="BattleLayout/Battle" unique_id=58041034]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("7_8d2i4")
+
+[node name="TextureButton" parent="BattleLayout/Battle/Enemies" unique_id=542823120 instance=ExtResource("8_6l16w")]
+layout_mode = 0
+offset_left = 1475.0
+offset_top = 485.0
+offset_right = 1524.0
+offset_bottom = 540.0
+
+[node name="Control" parent="BattleLayout" unique_id=818718884 instance=ExtResource("9_jf7jn")]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -668.0
-offset_top = -376.0
-offset_right = 668.0
-offset_bottom = 47.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 20
 
-[node name="QuestionPanel" type="Panel" parent="BattleLayout/Control/Question" unique_id=1092384378]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="Question" type="Label" parent="BattleLayout/Control/Question/QuestionPanel" unique_id=884205701]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -665.0
-offset_top = -209.5
-offset_right = 665.0
-offset_bottom = 209.5
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 4
-theme_override_constants/outline_size = 10
-theme_override_font_sizes/font_size = 60
-text = "Question will appear here."
-horizontal_alignment = 1
-vertical_alignment = 1
-autowrap_mode = 3
-
-[node name="HtmlQuestion" type="VBoxContainer" parent="BattleLayout/Control" unique_id=1494800806]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -457.0
-offset_top = 56.0
-offset_right = 457.0
-offset_bottom = 230.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 10
-alignment = 1
-
-[node name="A" type="Button" parent="BattleLayout/Control/HtmlQuestion" unique_id=1979590953]
-layout_mode = 2
-theme = ExtResource("3_8d2i4")
-theme_override_constants/outline_size = 10
-action_mode = 0
-text = "Choice A"
-
-[node name="B" type="Button" parent="BattleLayout/Control/HtmlQuestion" unique_id=296726188]
-layout_mode = 2
-theme = ExtResource("3_8d2i4")
-theme_override_constants/outline_size = 10
-action_mode = 0
-text = "Choice B"
-
-[node name="C" type="Button" parent="BattleLayout/Control/HtmlQuestion" unique_id=1530375299]
-layout_mode = 2
-theme = ExtResource("3_8d2i4")
-theme_override_constants/outline_size = 10
-action_mode = 0
-text = "Choice C"
-
-[node name="D" type="Button" parent="BattleLayout/Control/HtmlQuestion" unique_id=1530375300]
-layout_mode = 2
-theme = ExtResource("3_8d2i4")
-theme_override_constants/outline_size = 10
-action_mode = 0
-text = "Choice D"
-
-[node name="Lose" type="Label" parent="BattleLayout" unique_id=1306941001]
+[node name="Lose" type="Label" parent="BattleLayout" unique_id=948726353]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -330,7 +328,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Win" type="Label" parent="BattleLayout" unique_id=962400168]
+[node name="Win" type="Label" parent="BattleLayout" unique_id=132670428]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -349,7 +347,7 @@ horizontal_alignment = 1
 vertical_alignment = 1
 metadata/_edit_use_anchors_ = true
 
-[node name="Info" type="Label" parent="BattleLayout" unique_id=1234567890]
+[node name="Info" type="Label" parent="BattleLayout" unique_id=1300748977]
 custom_minimum_size = Vector2(400, 80)
 anchors_preset = 5
 anchor_left = 0.5
@@ -362,6 +360,29 @@ grow_horizontal = 2
 theme = ExtResource("3_8d2i4")
 theme_override_colors/font_color = Color(0.9529412, 0.77254903, 0.46666667, 1)
 theme_override_font_sizes/font_size = 50
-text = "YOUR TURN"
+text = "PLAYER'S TURN"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="QuestionInfo" type="Label" parent="BattleLayout" unique_id=216929099]
+visible = false
+custom_minimum_size = Vector2(645, 150)
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -322.5
+offset_top = -542.0
+offset_right = 322.5
+offset_bottom = -92.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("3_8d2i4")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 60
+text = "ENEMY GOT IT RIGHT"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PauseMenu" parent="BattleLayout" unique_id=836059466 instance=ExtResource("10_a205f")]
